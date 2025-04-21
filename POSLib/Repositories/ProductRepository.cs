@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Data.Sqlite; // Use the Microsoft.Data.Sqlite namespace
+using POSLib.Exceptions;
 using POSLib.Models;         // Assuming Product model is here
 
 namespace POSLib.Repositories
@@ -69,13 +70,24 @@ namespace POSLib.Repositories
             connection.Open();
 
             using var command = connection.CreateCommand();
-            // Use $ parameter prefixes
+            
             command.CommandText = "INSERT INTO Products (name, price, barcode) VALUES ($name, $price, $barcode)";
             command.Parameters.AddWithValue("$name", product.Name);
             command.Parameters.AddWithValue("$price", product.Price);
             command.Parameters.AddWithValue("$barcode", product.Barcode);
 
-            command.ExecuteNonQuery(); // Execute the insert command
+            try
+            {
+                command.ExecuteNonQuery();
+            }
+            catch (SqliteException ex) when (ex.SqliteErrorCode == 19) // SQLITE_CONSTRAINT
+            {
+                if (ex.Message.Contains("UNIQUE constraint failed: Products.barcode"))
+                {
+                    throw new BarcodeAlreadyExistsException($"A product with the barcode '{product.Barcode}' already exists.", ex);
+                }
+                throw;
+            }
         }
 
         public void Update(Product product)
