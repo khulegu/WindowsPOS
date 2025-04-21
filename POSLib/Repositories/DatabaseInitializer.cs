@@ -12,6 +12,29 @@ namespace POSLib.Repositories
 {
     public static class DatabaseInitializer
     {
+
+        private static void CreateUserIfDoesntExist(SqliteConnection connection, string username, string password, string role)
+        {
+            // Check if the user already exists
+            string checkUserSql = "SELECT COUNT(*) FROM Users WHERE username = @username";
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = checkUserSql;
+                command.Parameters.AddWithValue("@username", username);
+                long userExists = (long?)command.ExecuteScalar() ?? 0;
+
+                if (userExists == 0)
+                {
+                    // Insert the new user
+                    string insertUserSql = "INSERT INTO Users (username, password, role) VALUES (@username, @password, @role)";
+                    command.CommandText = insertUserSql;
+                    command.Parameters.AddWithValue("@password", password); // Hash the password in a real application
+                    command.Parameters.AddWithValue("@role", role);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
         public static void InitializeDatabase(string connectionString)
         {
             // The 'using' statement ensures the connection is closed and disposed of,
@@ -72,28 +95,10 @@ namespace POSLib.Repositories
                 }
                 */
 
-                // --- (Optional) Seed Initial Data ---
-                // You might want to add default users or products here if needed,
-                // checking if they exist first. Example (Admin User):
-                /*
-                string checkAdminSql = "SELECT COUNT(*) FROM Users WHERE username = 'admin'";
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = checkAdminSql;
-                    // Ensure ExecuteScalar returns a non-null value before converting
-                    long adminExists = (long?)command.ExecuteScalar() ?? 0;
-
-                    if (adminExists == 0)
-                    {
-                       string insertAdminSql = @"
-                       INSERT INTO Users (username, password, role)
-                       VALUES ('admin', 'hashed_admin_password', 'Administrator');"; // ALWAYS HASH PASSWORDS!
-                       command.CommandText = insertAdminSql;
-                       command.ExecuteNonQuery();
-                       Console.WriteLine("Default admin user created.");
-                    }
-                }
-                */
+                // --- Seeding Initial Data ---
+                CreateUserIfDoesntExist(connection, "manager", "1234", "Manager");
+                CreateUserIfDoesntExist(connection, "cashier1", "1234", "Cashier");
+                CreateUserIfDoesntExist(connection, "cashier2", "1234", "Cashier");
 
                 Console.WriteLine("Database initialization complete.");
 
