@@ -15,7 +15,6 @@ namespace POSLib.Repositories
 
         private static void CreateUserIfDoesntExist(SqliteConnection connection, string username, string password, string role)
         {
-            // Check if the user already exists
             string checkUserSql = "SELECT COUNT(*) FROM Users WHERE username = @username";
             using (var command = connection.CreateCommand())
             {
@@ -25,7 +24,6 @@ namespace POSLib.Repositories
 
                 if (userExists == 0)
                 {
-                    // Insert the new user
                     string insertUserSql = "INSERT INTO Users (username, password, role) VALUES (@username, @password, @role)";
                     command.CommandText = insertUserSql;
                     command.Parameters.AddWithValue("@password", password); // Hash the password in a real application
@@ -37,18 +35,12 @@ namespace POSLib.Repositories
 
         public static void InitializeDatabase(string connectionString)
         {
-            // The 'using' statement ensures the connection is closed and disposed of,
-            // even if errors occur.
             using var connection = new SqliteConnection(connectionString);
             try
             {
-                // Opening the connection creates the database file if it doesn't exist.
                 connection.Open();
                 Console.WriteLine($"Database file checked/created at: {connection.DataSource}");
 
-                // --- Create Users Table ---
-                // Use "CREATE TABLE IF NOT EXISTS" to avoid errors if the table already exists.
-                // This makes the initialization safe to run multiple times.
                 string createUserTableSql = @"
             CREATE TABLE IF NOT EXISTS Users (
                 id       INTEGER PRIMARY KEY AUTOINCREMENT, -- Standard auto-incrementing ID
@@ -57,7 +49,6 @@ namespace POSLib.Repositories
                 role     TEXT NOT NULL                     -- Roles must exist
             );";
 
-                // Use 'using' for the command as well.
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = createUserTableSql;
@@ -65,7 +56,6 @@ namespace POSLib.Repositories
                     Console.WriteLine("Users table checked/created.");
                 }
 
-                // --- Create Products Table ---
                 string createProductTableSql = @"
             CREATE TABLE IF NOT EXISTS Products (
                 id      INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -80,20 +70,6 @@ namespace POSLib.Repositories
                     command.ExecuteNonQuery();
                     Console.WriteLine("Products table checked/created.");
                 }
-
-                // --- (Optional) Add Indexes ---
-                // Indexes speed up lookups on specific columns (like barcode).
-                // UNIQUE constraints often create an index automatically, but you can add others.
-                /*
-                string createBarcodeIndexSql = @"
-                CREATE INDEX IF NOT EXISTS idx_product_barcode ON Products (barcode);";
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = createBarcodeIndexSql;
-                    command.ExecuteNonQuery();
-                    Console.WriteLine("Product barcode index checked/created.");
-                }
-                */
 
                 // --- Seeding Initial Data ---
                 CreateUserIfDoesntExist(connection, "manager", "1234", "Manager");
