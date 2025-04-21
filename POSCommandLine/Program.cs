@@ -1,4 +1,5 @@
-﻿using POSLib.Models;
+﻿using POSLib.Exceptions;
+using POSLib.Models;
 using POSLib.Repositories;
 using POSLib.Services;
 
@@ -6,7 +7,6 @@ internal class Program
 {
   private static void Main(string[] args)
   {
-    // Startup
     var connStr = "Data Source=pos.db";
 
     DatabaseInitializer.InitializeDatabase(connStr);
@@ -16,23 +16,39 @@ internal class Program
     var productRepo = new ProductRepository(connStr);
 
     var authService = new AuthService(userRepo);
-    var productService = new ProductService(productRepo);
     var cartService = new CartService();
 
-    // Login
     var user = authService.Login("manager", "1234");
-    if (user != null && user.Role == "Manager") {
-        Console.WriteLine($"Welcome {user.Username}!");
-        }
 
-    // Бараа нэмэх
-    productService.AddProduct(new Product { Name = "Jam", Price = 5.0, Barcode = "555" });
+    if (user == null)
+    {
+      Console.WriteLine("Login failed");
+      return;
+    }
 
-    // Сагсанд бараа нэмэх
+    Console.WriteLine($"Welcome {user.Username}!");
+
+    var productService = new ProductService(productRepo, user);
+
+    try
+    {
+      productService.AddProduct(new Product { Name = "Jam", Price = 5.0, Barcode = "555", Category = "Food" });
+    }
+    catch (ForbiddenException ex)
+    {
+      Console.WriteLine(ex.Message);
+    }
+    catch (BarcodeAlreadyExistsException ex)
+    {
+      Console.WriteLine(ex.Message);
+    }
+
     var prod = productService.GetProductByBarcode("555");
+
     cartService.AddToCart(prod);
 
-    // Сагсны нийт үнэ
     var total = cartService.GetTotal();
+
+    Console.WriteLine($"Total: {total}");
   }
 }

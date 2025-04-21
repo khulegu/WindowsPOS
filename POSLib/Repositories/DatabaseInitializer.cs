@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.Data.Sqlite;
-using System;
-
+﻿using Microsoft.Data.Sqlite;
 
 namespace POSLib.Repositories
 {
@@ -26,8 +18,29 @@ namespace POSLib.Repositories
                 {
                     string insertUserSql = "INSERT INTO Users (username, password, role) VALUES (@username, @password, @role)";
                     command.CommandText = insertUserSql;
-                    command.Parameters.AddWithValue("@password", password); // Hash the password in a real application
+                    command.Parameters.AddWithValue("@password", password);
                     command.Parameters.AddWithValue("@role", role);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private static void CreateProductIfDoesntExist(SqliteConnection connection, string name, double price, string barcode, string category)
+        {
+            string checkProductSql = "SELECT COUNT(*) FROM Products WHERE barcode = @barcode";
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = checkProductSql;
+                command.Parameters.AddWithValue("@barcode", barcode);
+                long productExists = (long?)command.ExecuteScalar() ?? 0;
+
+                if (productExists == 0)
+                {
+                    string insertProductSql = "INSERT INTO Products (name, price, barcode, category) VALUES (@name, @price, @barcode, @category)";
+                    command.CommandText = insertProductSql;
+                    command.Parameters.AddWithValue("@name", name);
+                    command.Parameters.AddWithValue("@price", price);
+                    command.Parameters.AddWithValue("@category", category);
                     command.ExecuteNonQuery();
                 }
             }
@@ -43,16 +56,16 @@ namespace POSLib.Repositories
 
                 string createUserTableSql = @"
             CREATE TABLE IF NOT EXISTS Users (
-                id       INTEGER PRIMARY KEY AUTOINCREMENT, -- Standard auto-incrementing ID
-                username TEXT NOT NULL UNIQUE,             -- Usernames must exist and be unique
-                password TEXT NOT NULL,                    -- Passwords must exist (HASH THEM!)
-                role     TEXT NOT NULL                     -- Roles must exist
+                id       INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL UNIQUE,
+                password TEXT NOT NULL,
+                role     TEXT NOT NULL
             );";
 
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = createUserTableSql;
-                    command.ExecuteNonQuery(); // Executes commands that don't return data (like CREATE, INSERT, UPDATE, DELETE)
+                    command.ExecuteNonQuery();
                     Console.WriteLine("Users table checked/created.");
                 }
 
@@ -60,8 +73,9 @@ namespace POSLib.Repositories
             CREATE TABLE IF NOT EXISTS Products (
                 id      INTEGER PRIMARY KEY AUTOINCREMENT,
                 name    TEXT NOT NULL,
-                price   REAL NOT NULL, -- REAL is suitable for C# double. Use NUMERIC for C# decimal.
-                barcode TEXT NOT NULL UNIQUE -- Barcodes must exist and be unique
+                price   REAL NOT NULL,
+                barcode TEXT NOT NULL UNIQUE,
+                category TEXT NOT NULL
             );";
 
                 using (var command = connection.CreateCommand())
@@ -71,22 +85,39 @@ namespace POSLib.Repositories
                     Console.WriteLine("Products table checked/created.");
                 }
 
-                // --- Seeding Initial Data ---
                 CreateUserIfDoesntExist(connection, "manager", "1234", "Manager");
                 CreateUserIfDoesntExist(connection, "cashier1", "1234", "Cashier");
                 CreateUserIfDoesntExist(connection, "cashier2", "1234", "Cashier");
+
+                CreateProductIfDoesntExist(connection, "Apples (Gala)", 2.50, "001122334455", "Produce");
+                CreateProductIfDoesntExist(connection, "Milk (Whole)", 4.00, "667788990011", "Dairy & Cheese");
+                CreateProductIfDoesntExist(connection, "Bagels (Plain)", 5.50, "111222333444", "Bakery");
+                CreateProductIfDoesntExist(connection, "Orange Juice", 3.75, "555666777888", "Beverages");
+                CreateProductIfDoesntExist(connection, "Peanut Butter", 6.00, "999000111222", "Pantry");
+                CreateProductIfDoesntExist(connection, "Chicken Breast (Pack)", 12.99, "222333444555", "Meat & Seafood");
+                CreateProductIfDoesntExist(connection, "Pasta (Spaghetti)", 2.25, "777888999000", "Pantry");
+                CreateProductIfDoesntExist(connection, "Yogurt (Strawberry)", 1.25, "333444555666", "Dairy & Cheese");
+                CreateProductIfDoesntExist(connection, "Coffee Beans (Arabica)", 15.00, "888999000111", "Beverages");
+                CreateProductIfDoesntExist(connection, "Crackers (Saltine)", 3.00, "444555666777", "Snacks");
+                CreateProductIfDoesntExist(connection, "Bananas", 1.99, "009988776655", "Produce");
+                CreateProductIfDoesntExist(connection, "Eggs (Dozen)", 5.25, "665544332211", "Dairy & Cheese");
+                CreateProductIfDoesntExist(connection, "Croissants", 4.75, "119988776655", "Bakery");
+                CreateProductIfDoesntExist(connection, "Iced Tea (Peach)", 2.00, "559988776655", "Beverages");
+                CreateProductIfDoesntExist(connection, "Almonds (Bag)", 7.50, "991122334455", "Snacks");
+                CreateProductIfDoesntExist(connection, "Ground Beef", 9.50, "229988776655", "Meat & Seafood");
+                CreateProductIfDoesntExist(connection, "Rice (Basmati)", 4.25, "771122334455", "Pantry");
+                CreateProductIfDoesntExist(connection, "Butter (Stick)", 2.75, "339988776655", "Dairy & Cheese");
+                CreateProductIfDoesntExist(connection, "Green Tea Bags", 6.75, "881122334455", "Beverages");
+                CreateProductIfDoesntExist(connection, "Pretzels", 3.50, "449988776655", "Snacks");
 
                 Console.WriteLine("Database initialization complete.");
 
             }
             catch (SqliteException ex)
             {
-                // Log the error or handle it appropriately
                 Console.WriteLine($"Database initialization error: {ex.Message}");
-                // Consider re-throwing or handling critical failures
                 throw;
             }
-            // Connection is automatically closed here by the 'using' statement
         }
     }
 }
