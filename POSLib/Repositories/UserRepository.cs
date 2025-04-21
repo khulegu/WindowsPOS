@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data.SQLite;
-using POSLib.Models;
+using Microsoft.Data.Sqlite; // Use the Microsoft.Data.Sqlite namespace
+using POSLib.Models;         // Assuming User model is here
 
 namespace POSLib.Repositories
 {
@@ -15,24 +11,40 @@ namespace POSLib.Repositories
 
         public User GetUser(string username, string password)
         {
-            using var conn = new SQLiteConnection(_connStr);
-            conn.Open();
-            var cmd = new SQLiteCommand("SELECT * FROM Users WHERE username=@u AND password=@p", conn);
-            cmd.Parameters.AddWithValue("@u", username);
-            cmd.Parameters.AddWithValue("@p", password);
-            using var reader = cmd.ExecuteReader();
-            if (reader.Read())
+            // Use SqliteConnection from Microsoft.Data.Sqlite
+            using var connection = new SqliteConnection(_connStr);
+            connection.Open();
+
+            // Create and dispose the command properly
+            using var command = connection.CreateCommand();
+            // Use $ prefix for parameters (common practice with Microsoft.Data.Sqlite)
+            // Explicitly list columns instead of SELECT * for clarity and robustness
+            command.CommandText =
+                @"SELECT id, username, password, role
+                  FROM Users
+                  WHERE username = $username AND password = $password";
+
+            // Add parameters using AddWithValue (ensure parameter names match the SQL)
+            command.Parameters.AddWithValue("$username", username);
+            command.Parameters.AddWithValue("$password", password); // Note: Storing plain text passwords is insecure! Consider hashing.
+
+            // ExecuteReader returns a SqliteDataReader
+            using var reader = command.ExecuteReader();
+
+            if (reader.Read()) // Check if a user was found
             {
                 return new User
                 {
-                    Id = Convert.ToInt32(reader["id"]),
-                    Username = reader["username"].ToString(),
-                    Password = reader["password"].ToString(),
-                    Role = reader["role"].ToString()
+                    // Use GetOrdinal and typed getters for robustness and performance
+                    Id = reader.GetInt32(reader.GetOrdinal("id")),
+                    Username = reader.GetString(reader.GetOrdinal("username")),
+                    Password = reader.GetString(reader.GetOrdinal("password")), // Still retrieving the password - consider if needed client-side
+                    Role = reader.GetString(reader.GetOrdinal("role"))
                 };
             }
+
+            // No user found with the given credentials
             return null;
         }
     }
-
 }
