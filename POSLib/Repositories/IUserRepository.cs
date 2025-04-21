@@ -7,7 +7,7 @@ using POSLib.Models;
 
 namespace POSLib.Repositories
 {
-    internal interface IUserRepository
+    public interface IUserRepository
     {
         User GetUser(string username, string password);
     }
