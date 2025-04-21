@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35818.85
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POSForm", "POS\POSForm.csproj", "{D7ACE460-1B1F-4BD6-BF30-0DC7D6270934}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POSForm", "POSForm\POSForm.csproj", "{D7ACE460-1B1F-4BD6-BF30-0DC7D6270934}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POSLib", "POSLib\POSLib.csproj", "{DBB98DF3-E47F-4D8A-ADC7-D5C528FC7DBC}"
 EndProject
