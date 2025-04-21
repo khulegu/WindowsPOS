@@ -6,6 +6,6 @@
         public required string Name { get; set; }
         public double Price { get; set; }
         public required string Barcode { get; set; }
-        public required string Category { get; set; }
+        public required ProductCategory Category { get; set; }
     }
 }

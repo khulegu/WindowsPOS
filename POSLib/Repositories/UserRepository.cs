@@ -9,7 +9,7 @@ namespace POSLib.Repositories
         private readonly string _connStr;
         public UserRepository(string connStr) => _connStr = connStr;
 
-        public User GetUser(string username, string password)
+        public User? GetUser(string username, string password)
         {
             using var connection = new SqliteConnection(_connStr);
             connection.Open();

@@ -23,7 +23,11 @@ namespace POSLib.Repositories
                 Name = reader.GetString(reader.GetOrdinal("name")),
                 Price = reader.GetDouble(reader.GetOrdinal("price")),
                 Barcode = reader.GetString(reader.GetOrdinal("barcode")),
-                Category = reader.GetString(reader.GetOrdinal("category"))
+                Category = new ProductCategory
+                {
+                    Id = reader.GetInt32(reader.GetOrdinal("categoryId")),
+                    Name = reader.GetString(reader.GetOrdinal("categoryName"))
+                }
             };
         }
 
@@ -38,7 +42,11 @@ namespace POSLib.Repositories
             connection.Open();
 
             using var command = connection.CreateCommand();
-            command.CommandText = "SELECT id, name, price, barcode, category FROM Products";
+            command.CommandText = @"
+                SELECT p.id, p.name, p.price, p.barcode, c.id as categoryId, c.name as categoryName
+                FROM Products p
+                JOIN ProductCategories c ON p.categoryId = c.id
+            ";
 
             using var reader = command.ExecuteReader();
             while (reader.Read())
@@ -47,21 +55,26 @@ namespace POSLib.Repositories
             }
             return products;
         }
-        
+
         /// <summary>
         /// Category-t baigaa product-uudiig avna.
         /// </summary>
         /// <param name="category"></param>
         /// <returns></returns>
-        public List<Product> GetAllByCategory(string category)
+        public List<Product> GetAllByCategory(int categoryId)
         {
             var products = new List<Product>();
             using var connection = new SqliteConnection(_connStr);
             connection.Open();
 
             using var command = connection.CreateCommand();
-            command.CommandText = "SELECT id, name, price, barcode, category FROM Products WHERE category = $category";
-            command.Parameters.AddWithValue("$category", category);
+            command.CommandText = @"
+                SELECT p.id, p.name, p.price, p.barcode, c.id as categoryId, c.name as categoryName
+                FROM Products p
+                JOIN ProductCategories c ON p.categoryId = c.id
+                WHERE c.id = $categoryId
+            ";
+            command.Parameters.AddWithValue("$categoryId", categoryId);
 
             using var reader = command.ExecuteReader();
             while (reader.Read())
@@ -76,13 +89,18 @@ namespace POSLib.Repositories
         /// </summary>
         /// <param name="barcode"></param>
         /// <returns></returns>
-        public Product GetByBarcode(string barcode)
+        public Product? GetByBarcode(string barcode)
         {
             using var connection = new SqliteConnection(_connStr);
             connection.Open();
 
             using var command = connection.CreateCommand();
-            command.CommandText = "SELECT id, name, price, barcode, category FROM Products WHERE barcode = $barcode";
+            command.CommandText = @"
+                SELECT p.id, p.name, p.price, p.barcode, c.id as categoryId, c.name as categoryName
+                FROM Products p
+                JOIN ProductCategories c ON p.categoryId = c.id
+                WHERE p.barcode = $barcode
+            ";
             command.Parameters.AddWithValue("$barcode", barcode);
 
             using var reader = command.ExecuteReader();
@@ -99,12 +117,12 @@ namespace POSLib.Repositories
             connection.Open();
 
             using var command = connection.CreateCommand();
-            
-            command.CommandText = "INSERT INTO Products (name, price, barcode, category) VALUES ($name, $price, $barcode, $category)";
+
+            command.CommandText = "INSERT INTO Products (name, price, barcode, categoryId) VALUES ($name, $price, $barcode, $categoryId)";
             command.Parameters.AddWithValue("$name", product.Name);
             command.Parameters.AddWithValue("$price", product.Price);
             command.Parameters.AddWithValue("$barcode", product.Barcode);
-            command.Parameters.AddWithValue("$category", product.Category);
+            command.Parameters.AddWithValue("$categoryId", product.Category.Id);
 
             try
             {
@@ -127,12 +145,11 @@ namespace POSLib.Repositories
 
             using var command = connection.CreateCommand();
 
-            command.CommandText = "UPDATE Products SET name = $name, price = $price, barcode = $barcode, category = $category WHERE id = $id";
+            command.CommandText = "UPDATE Products SET name = $name, price = $price, barcode = $barcode WHERE id = $id";
             command.Parameters.AddWithValue("$name", product.Name);
             command.Parameters.AddWithValue("$price", product.Price);
             command.Parameters.AddWithValue("$barcode", product.Barcode);
             command.Parameters.AddWithValue("$id", product.Id);
-            command.Parameters.AddWithValue("$category", product.Category);
 
             command.ExecuteNonQuery();
         }
@@ -145,6 +162,46 @@ namespace POSLib.Repositories
             using var command = connection.CreateCommand();
 
             command.CommandText = "DELETE FROM Products WHERE id = $id";
+            command.Parameters.AddWithValue("$id", id);
+
+            command.ExecuteNonQuery();
+        }
+
+        public void AddCategory(ProductCategory category)
+        {
+            using var connection = new SqliteConnection(_connStr);
+            connection.Open();
+
+            using var command = connection.CreateCommand();
+
+            command.CommandText = "INSERT INTO ProductCategories (name) VALUES ($name)";
+            command.Parameters.AddWithValue("$name", category.Name);
+
+            command.ExecuteNonQuery();
+        }
+
+        public void UpdateCategory(ProductCategory category)
+        {
+            using var connection = new SqliteConnection(_connStr);
+            connection.Open();
+
+            using var command = connection.CreateCommand();
+
+            command.CommandText = "UPDATE ProductCategories SET name = $name WHERE id = $id";
+            command.Parameters.AddWithValue("$name", category.Name);
+            command.Parameters.AddWithValue("$id", category.Id);
+
+            command.ExecuteNonQuery();
+        }
+
+        public void DeleteCategory(int id)
+        {
+            using var connection = new SqliteConnection(_connStr);
+            connection.Open();
+
+            using var command = connection.CreateCommand();
+
+            command.CommandText = "DELETE FROM ProductCategories WHERE id = $id";
             command.Parameters.AddWithValue("$id", id);
 
             command.ExecuteNonQuery();

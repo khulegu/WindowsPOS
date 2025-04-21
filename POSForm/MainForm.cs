@@ -10,12 +10,13 @@ namespace POSForm
     {
 
         private static string connStr = "Data Source=pos.db";
-        private static UserRepository userRepo = new UserRepository(connStr);
-        private static AuthService authService = new AuthService(userRepo);
-        private static ProductRepository productRepo = new ProductRepository(connStr);
+        private static UserRepository userRepo = new(connStr);
+        private static AuthService authService = new(userRepo);
+        private static ProductRepository productRepo = new(connStr);
 
         private User _user;
         private ProductService _productService;
+        private CartService _cartService = new();
 
         public MainForm()
         {
@@ -37,6 +38,9 @@ namespace POSForm
             {
                 AddProductToCategory(product);
             }
+
+            cartDataGrid.AutoGenerateColumns = false;
+            cartDataGrid.DataSource = new BindingSource(_cartService.CartItems, null);
         }
 
         private void AddProductToCategory(Product product)
@@ -110,35 +114,14 @@ namespace POSForm
                 }
                 else
                 {
-                    MessageBox.Show("Product not found");
+                    //MessageBox.Show("Product not found");
                 }
             }
         }
 
         private void AddProductToCart(Product product)
         {
-            // Ehleed baraa sagsand baigaa esehiig shalgana.
-            foreach (DataGridViewRow row in cartDataGrid.Rows)
-            {
-                if (row.Cells["ItemName"].Value.ToString() == product.Name)
-                {
-                    int quantity = Convert.ToInt32(row.Cells["Quantity"].Value);
-                    quantity++;
-                    row.Cells["Quantity"].Value = quantity;
-                    row.Cells["Total"].Value = quantity * product.Price;
-                    CalculateGrandTotal();
-                    return;
-                }
-            }
-
-            // Baihgui bol shine mur nemne.
-            int newRowIndex = cartDataGrid.Rows.Add();
-            DataGridViewRow newRow = cartDataGrid.Rows[newRowIndex];
-            newRow.Cells["ItemName"].Value = product.Name;
-            newRow.Cells["UnitPrice"].Value = product.Price;
-            newRow.Cells["Quantity"].Value = 1;
-            newRow.Cells["Total"].Value = product.Price;
-            CalculateGrandTotal();
+            _cartService.AddToCart(product);
         }
 
 
@@ -147,48 +130,19 @@ namespace POSForm
         /// </summary>
         private void CalculateGrandTotal()
         {
-            double total = 0;
-            foreach (DataGridViewRow row in cartDataGrid.Rows)
-            {
-                if (row.Cells["Total"].Value != null)
-                {
-                    total += Convert.ToDouble(row.Cells["Total"].Value);
-                }
-            }
-            label1.Text = $"Total: {total:C}";
-        }
-
-
-        private void UpdateTotal(int rowIndex)
-        {
-            int quantity = Convert.ToInt32(cartDataGrid.Rows[rowIndex].Cells[2].Value);
-            double price = Convert.ToDouble(cartDataGrid.Rows[rowIndex].Cells[4].Value);
-            double discount = Convert.ToDouble(cartDataGrid.Rows[rowIndex].Cells[5].Value);
-
-            double total = quantity * price * (1 - (discount / 100));
-            cartDataGrid.Rows[rowIndex].Cells[6].Value = Math.Round(total, 2);
+            label1.Text = $"Total: {_cartService.GetTotal():C}";
         }
 
         private void cartDataGrid_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Handle minus button click (column index 1)
-            if (e.ColumnIndex == 1 && e.RowIndex >= 0)
+            
+            if (cartDataGrid.Columns[e.ColumnIndex].Name == "Decrement" && e.RowIndex >= 0)
             {
-                int currentQuantity = Convert.ToInt32(cartDataGrid.Rows[e.RowIndex].Cells[2].Value);
-                if (currentQuantity > 0)
-                {
-                    currentQuantity--;
-                    cartDataGrid.Rows[e.RowIndex].Cells[2].Value = currentQuantity;
-                    UpdateTotal(e.RowIndex);
-                }
+                _cartService.CartItems.ElementAt(e.RowIndex).Decrement();
             }
-            // Handle plus button click (column index 3)
-            else if (e.ColumnIndex == 3 && e.RowIndex >= 0)
+            else if (cartDataGrid.Columns[e.ColumnIndex].Name == "Increment" && e.RowIndex >= 0)
             {
-                int currentQuantity = Convert.ToInt32(cartDataGrid.Rows[e.RowIndex].Cells[2].Value);
-                currentQuantity++;
-                cartDataGrid.Rows[e.RowIndex].Cells[2].Value = currentQuantity;
-                UpdateTotal(e.RowIndex);
+                _cartService.CartItems.ElementAt(e.RowIndex).Increment();
             }
         }
     }

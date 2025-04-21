@@ -32,7 +32,15 @@ internal class Program
 
     try
     {
-      productService.AddProduct(new Product { Name = "Jam", Price = 5.0, Barcode = "555", Category = "Food" });
+      productService.AddProduct(
+        new Product
+        {
+          Name = "Jam",
+          Price = 5.0,
+          Barcode = "555",
+          Category = new ProductCategory { Id = 1, Name = "Food" }
+        }
+      );
     }
     catch (ForbiddenException ex)
     {

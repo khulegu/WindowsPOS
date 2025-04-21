@@ -28,22 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             splitContainer1 = new SplitContainer();
             tableLayoutPanel1 = new TableLayoutPanel();
             cartDataGrid = new DataGridView();
-            ItemName = new DataGridViewTextBoxColumn();
-            Decrease = new DataGridViewButtonColumn();
-            Quantity = new DataGridViewTextBoxColumn();
-            Increase = new DataGridViewButtonColumn();
-            UnitPrice = new DataGridViewTextBoxColumn();
-            Discount = new DataGridViewTextBoxColumn();
-            Total = new DataGridViewTextBoxColumn();
             buttonPay = new Button();
             label1 = new Label();
             categoriesLayout = new FlowLayoutPanel();
             productsLayout = new FlowLayoutPanel();
             textBoxBarcode = new TextBox();
+            ItemName = new DataGridViewTextBoxColumn();
+            Decrement = new DataGridViewButtonColumn();
+            Quantity = new DataGridViewTextBoxColumn();
+            Increment = new DataGridViewButtonColumn();
+            UnitPrice = new DataGridViewTextBoxColumn();
+            Discount = new DataGridViewTextBoxColumn();
+            Total = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -94,9 +94,9 @@
             cartDataGrid.AllowUserToAddRows = false;
             cartDataGrid.AllowUserToDeleteRows = false;
             cartDataGrid.AllowUserToResizeColumns = false;
-            cartDataGrid.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             cartDataGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            cartDataGrid.Columns.AddRange(new DataGridViewColumn[] { ItemName, Decrease, Quantity, Increase, UnitPrice, Discount, Total });
+            cartDataGrid.Columns.AddRange(new DataGridViewColumn[] { ItemName, Decrement, Quantity, Increment, UnitPrice, Discount, Total });
+            cartDataGrid.Dock = DockStyle.Fill;
             cartDataGrid.Location = new Point(10, 10);
             cartDataGrid.Margin = new Padding(10);
             cartDataGrid.MaximumSize = new Size(10000, 10000);
@@ -106,74 +106,6 @@
             cartDataGrid.Size = new Size(854, 852);
             cartDataGrid.TabIndex = 0;
             cartDataGrid.CellClick += cartDataGrid_CellClick;
-            // 
-            // ItemName
-            // 
-            ItemName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            ItemName.HeaderText = "Item Name";
-            ItemName.MinimumWidth = 10;
-            ItemName.Name = "ItemName";
-            ItemName.ReadOnly = true;
-            // 
-            // Decrease
-            // 
-            Decrease.HeaderText = "";
-            Decrease.MinimumWidth = 10;
-            Decrease.Name = "Decrease";
-            Decrease.ReadOnly = true;
-            Decrease.Text = "-";
-            Decrease.ToolTipText = "-";
-            Decrease.UseColumnTextForButtonValue = true;
-            Decrease.Width = 30;
-            // 
-            // Quantity
-            // 
-            Quantity.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Quantity.DefaultCellStyle = dataGridViewCellStyle3;
-            Quantity.HeaderText = "Quantity";
-            Quantity.MinimumWidth = 10;
-            Quantity.Name = "Quantity";
-            Quantity.ReadOnly = true;
-            Quantity.Width = 151;
-            // 
-            // Increase
-            // 
-            Increase.HeaderText = "";
-            Increase.MinimumWidth = 10;
-            Increase.Name = "Increase";
-            Increase.ReadOnly = true;
-            Increase.Text = "+";
-            Increase.ToolTipText = "+";
-            Increase.UseColumnTextForButtonValue = true;
-            Increase.Width = 30;
-            // 
-            // UnitPrice
-            // 
-            UnitPrice.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            UnitPrice.HeaderText = "U/Price";
-            UnitPrice.MinimumWidth = 10;
-            UnitPrice.Name = "UnitPrice";
-            UnitPrice.ReadOnly = true;
-            UnitPrice.Width = 135;
-            // 
-            // Discount
-            // 
-            Discount.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            Discount.HeaderText = "Dis%";
-            Discount.MinimumWidth = 10;
-            Discount.Name = "Discount";
-            Discount.ReadOnly = true;
-            Discount.Width = 112;
-            // 
-            // Total
-            // 
-            Total.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            Total.HeaderText = "Total";
-            Total.MinimumWidth = 10;
-            Total.Name = "Total";
-            Total.ReadOnly = true;
-            Total.Width = 110;
             // 
             // buttonPay
             // 
@@ -227,6 +159,79 @@
             textBoxBarcode.TabIndex = 0;
             textBoxBarcode.KeyDown += textBoxBarcode_KeyDown;
             // 
+            // ItemName
+            // 
+            ItemName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            ItemName.DataPropertyName = "Name";
+            ItemName.HeaderText = "Item Name";
+            ItemName.MinimumWidth = 10;
+            ItemName.Name = "ItemName";
+            ItemName.ReadOnly = true;
+            // 
+            // Decrement
+            // 
+            Decrement.HeaderText = "";
+            Decrement.MinimumWidth = 10;
+            Decrement.Name = "Decrement";
+            Decrement.ReadOnly = true;
+            Decrement.Text = "-";
+            Decrement.ToolTipText = "-";
+            Decrement.UseColumnTextForButtonValue = true;
+            Decrement.Width = 30;
+            // 
+            // Quantity
+            // 
+            Quantity.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            Quantity.DataPropertyName = "Quantity";
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Quantity.DefaultCellStyle = dataGridViewCellStyle1;
+            Quantity.HeaderText = "Quantity";
+            Quantity.MinimumWidth = 10;
+            Quantity.Name = "Quantity";
+            Quantity.ReadOnly = true;
+            Quantity.Width = 151;
+            // 
+            // Increment
+            // 
+            Increment.HeaderText = "";
+            Increment.MinimumWidth = 10;
+            Increment.Name = "Increment";
+            Increment.ReadOnly = true;
+            Increment.Text = "+";
+            Increment.ToolTipText = "+";
+            Increment.UseColumnTextForButtonValue = true;
+            Increment.Width = 30;
+            // 
+            // UnitPrice
+            // 
+            UnitPrice.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            UnitPrice.DataPropertyName = "Price";
+            UnitPrice.HeaderText = "U/Price";
+            UnitPrice.MinimumWidth = 10;
+            UnitPrice.Name = "UnitPrice";
+            UnitPrice.ReadOnly = true;
+            UnitPrice.Width = 135;
+            // 
+            // Discount
+            // 
+            Discount.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            Discount.DataPropertyName = "Discount";
+            Discount.HeaderText = "Dis%";
+            Discount.MinimumWidth = 10;
+            Discount.Name = "Discount";
+            Discount.ReadOnly = true;
+            Discount.Width = 112;
+            // 
+            // Total
+            // 
+            Total.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            Total.DataPropertyName = "Total";
+            Total.HeaderText = "Total";
+            Total.MinimumWidth = 10;
+            Total.Name = "Total";
+            Total.ReadOnly = true;
+            Total.Width = 110;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
@@ -257,13 +262,13 @@
         private TextBox textBoxBarcode;
         private FlowLayoutPanel categoriesLayout;
         private FlowLayoutPanel productsLayout;
+        private TableLayoutPanel tableLayoutPanel1;
         private DataGridViewTextBoxColumn ItemName;
-        private DataGridViewButtonColumn Decrease;
+        private DataGridViewButtonColumn Decrement;
         private DataGridViewTextBoxColumn Quantity;
-        private DataGridViewButtonColumn Increase;
+        private DataGridViewButtonColumn Increment;
         private DataGridViewTextBoxColumn UnitPrice;
         private DataGridViewTextBoxColumn Discount;
         private DataGridViewTextBoxColumn Total;
-        private TableLayoutPanel tableLayoutPanel1;
     }
 }
