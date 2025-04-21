@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POSLib", "POSLib\POSLib.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POSLibTest", "POSLibTest\POSLibTest.csproj", "{1E7A36E5-F02F-42B8-B1E0-111A37B7F68D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POSCommandLine", "POSCommandLine\POSCommandLine.csproj", "{E2A74C1E-8D9F-4231-8BD4-48DB2F3BC4FC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{1E7A36E5-F02F-42B8-B1E0-111A37B7F68D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E7A36E5-F02F-42B8-B1E0-111A37B7F68D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E7A36E5-F02F-42B8-B1E0-111A37B7F68D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2A74C1E-8D9F-4231-8BD4-48DB2F3BC4FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2A74C1E-8D9F-4231-8BD4-48DB2F3BC4FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2A74C1E-8D9F-4231-8BD4-48DB2F3BC4FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2A74C1E-8D9F-4231-8BD4-48DB2F3BC4FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
