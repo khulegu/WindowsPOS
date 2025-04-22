@@ -53,7 +53,7 @@ internal class Program
 
     var prod = productService.GetProductByBarcode("555");
 
-    cartService.AddToCart(prod);
+    cartService.Add(prod);
 
     var total = cartService.GetTotal();
 

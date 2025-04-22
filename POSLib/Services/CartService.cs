@@ -3,16 +3,19 @@ using POSLib.Models;
 
 namespace POSLib.Services
 {
-    public class CartService
+    public class CartService: INotifyPropertyChanged
     {
-        private readonly Dictionary<string, CartItem> _cart = new();
-        public BindingList<CartItem> CartItems { get; } = new();
+        private readonly Dictionary<string, CartItem> _cart = [];
 
-        public void AddToCart(Product product)
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public BindingList<CartItem> CartItems { get; } = [];
+
+        public void Add(Product product)
         {
-            if (_cart.ContainsKey(product.Barcode))
+            if (_cart.TryGetValue(product.Barcode, out CartItem? value))
             {
-                _cart[product.Barcode].Quantity++;
+                value.Quantity++;
                 // Notify UI about the change
                 var item = CartItems.FirstOrDefault(x => x.Product.Barcode == product.Barcode);
                 if (item != null)
@@ -27,13 +30,15 @@ namespace POSLib.Services
                 _cart[product.Barcode] = cartItem;
                 CartItems.Add(cartItem);
             }
+
+            OnPropertyChanged(nameof(Total));
         }
 
         public void RemoveFromCart(string barcode)
         {
-            if (_cart.ContainsKey(barcode))
+            if (_cart.TryGetValue(barcode, out CartItem? value))
             {
-                _cart[barcode].Quantity--;
+                value.Quantity--;
                 var item = CartItems.FirstOrDefault(x => x.Product.Barcode == barcode);
                 if (_cart[barcode].Quantity <= 0)
                 {
@@ -47,14 +52,24 @@ namespace POSLib.Services
                     CartItems.ResetItem(idx);
                 }
             }
+
+            OnPropertyChanged(nameof(Total));
         }
 
-        public double GetTotal() => CartItems.Sum(x => x.Product.Price * x.Quantity);
+        public double Total
+        {
+            get => CartItems.Sum(x => x.Product.Price * x.Quantity);
+        }
 
         public void ClearCart()
         {
             _cart.Clear();
             CartItems.Clear();
+        }
+
+        protected virtual void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
     }
 }

@@ -32,11 +32,6 @@
             splitContainer1 = new SplitContainer();
             tableLayoutPanel1 = new TableLayoutPanel();
             cartDataGrid = new DataGridView();
-            buttonPay = new Button();
-            label1 = new Label();
-            categoriesLayout = new FlowLayoutPanel();
-            productsLayout = new FlowLayoutPanel();
-            textBoxBarcode = new TextBox();
             ItemName = new DataGridViewTextBoxColumn();
             Decrement = new DataGridViewButtonColumn();
             Quantity = new DataGridViewTextBoxColumn();
@@ -44,12 +39,19 @@
             UnitPrice = new DataGridViewTextBoxColumn();
             Discount = new DataGridViewTextBoxColumn();
             Total = new DataGridViewTextBoxColumn();
+            buttonPay = new Button();
+            label1 = new Label();
+            tableLayoutPanel2 = new TableLayoutPanel();
+            categoriesLayout = new FlowLayoutPanel();
+            textBoxBarcode = new TextBox();
+            productsLayout = new FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)cartDataGrid).BeginInit();
+            tableLayoutPanel2.SuspendLayout();
             SuspendLayout();
             // 
             // splitContainer1
@@ -64,12 +66,10 @@
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(categoriesLayout);
-            splitContainer1.Panel2.Controls.Add(productsLayout);
-            splitContainer1.Panel2.Controls.Add(textBoxBarcode);
+            splitContainer1.Panel2.Controls.Add(tableLayoutPanel2);
             splitContainer1.Panel2.RightToLeft = RightToLeft.No;
-            splitContainer1.Size = new Size(1724, 1052);
-            splitContainer1.SplitterDistance = 874;
+            splitContainer1.Size = new Size(1835, 1136);
+            splitContainer1.SplitterDistance = 930;
             splitContainer1.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -86,7 +86,7 @@
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 80F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 100F));
-            tableLayoutPanel1.Size = new Size(874, 1052);
+            tableLayoutPanel1.Size = new Size(930, 1136);
             tableLayoutPanel1.TabIndex = 3;
             // 
             // cartDataGrid
@@ -103,61 +103,10 @@
             cartDataGrid.Name = "cartDataGrid";
             cartDataGrid.ReadOnly = true;
             cartDataGrid.RowHeadersWidth = 82;
-            cartDataGrid.Size = new Size(854, 852);
+            cartDataGrid.Size = new Size(910, 936);
             cartDataGrid.TabIndex = 0;
-            cartDataGrid.CellClick += cartDataGrid_CellClick;
-            // 
-            // buttonPay
-            // 
-            buttonPay.BackColor = Color.LimeGreen;
-            buttonPay.Dock = DockStyle.Fill;
-            buttonPay.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            buttonPay.ForeColor = Color.White;
-            buttonPay.Location = new Point(10, 962);
-            buttonPay.Margin = new Padding(10);
-            buttonPay.Name = "buttonPay";
-            buttonPay.Size = new Size(854, 80);
-            buttonPay.TabIndex = 1;
-            buttonPay.Text = "Pay";
-            buttonPay.UseVisualStyleBackColor = false;
-            buttonPay.Click += buttonPay_Click;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Dock = DockStyle.Fill;
-            label1.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label1.Location = new Point(10, 882);
-            label1.Margin = new Padding(10);
-            label1.Name = "label1";
-            label1.Size = new Size(854, 60);
-            label1.TabIndex = 2;
-            label1.Text = "labelTotalPrice";
-            // 
-            // categoriesLayout
-            // 
-            categoriesLayout.Location = new Point(27, 602);
-            categoriesLayout.Name = "categoriesLayout";
-            categoriesLayout.Size = new Size(778, 200);
-            categoriesLayout.TabIndex = 2;
-            // 
-            // productsLayout
-            // 
-            productsLayout.AutoScroll = true;
-            productsLayout.Location = new Point(27, 90);
-            productsLayout.Name = "productsLayout";
-            productsLayout.Padding = new Padding(5);
-            productsLayout.Size = new Size(778, 473);
-            productsLayout.TabIndex = 1;
-            // 
-            // textBoxBarcode
-            // 
-            textBoxBarcode.Location = new Point(27, 12);
-            textBoxBarcode.Name = "textBoxBarcode";
-            textBoxBarcode.PlaceholderText = "Barcode";
-            textBoxBarcode.Size = new Size(778, 39);
-            textBoxBarcode.TabIndex = 0;
-            textBoxBarcode.KeyDown += textBoxBarcode_KeyDown;
+            cartDataGrid.CellClick += CartGridCell_DoubleClickOrClick;
+            cartDataGrid.CellDoubleClick += CartGridCell_DoubleClickOrClick;
             // 
             // ItemName
             // 
@@ -232,11 +181,88 @@
             Total.ReadOnly = true;
             Total.Width = 110;
             // 
+            // buttonPay
+            // 
+            buttonPay.BackColor = Color.LimeGreen;
+            buttonPay.Dock = DockStyle.Fill;
+            buttonPay.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            buttonPay.ForeColor = Color.White;
+            buttonPay.Location = new Point(10, 1046);
+            buttonPay.Margin = new Padding(10);
+            buttonPay.Name = "buttonPay";
+            buttonPay.Size = new Size(910, 80);
+            buttonPay.TabIndex = 1;
+            buttonPay.Text = "Pay";
+            buttonPay.UseVisualStyleBackColor = false;
+            buttonPay.Click += PayButton_Click;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Dock = DockStyle.Fill;
+            label1.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label1.Location = new Point(10, 966);
+            label1.Margin = new Padding(10);
+            label1.Name = "label1";
+            label1.Size = new Size(910, 60);
+            label1.TabIndex = 2;
+            label1.Text = "labelTotalPrice";
+            // 
+            // tableLayoutPanel2
+            // 
+            tableLayoutPanel2.ColumnCount = 1;
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel2.Controls.Add(categoriesLayout, 0, 2);
+            tableLayoutPanel2.Controls.Add(textBoxBarcode, 0, 0);
+            tableLayoutPanel2.Controls.Add(productsLayout, 0, 1);
+            tableLayoutPanel2.Dock = DockStyle.Fill;
+            tableLayoutPanel2.Location = new Point(0, 0);
+            tableLayoutPanel2.Name = "tableLayoutPanel2";
+            tableLayoutPanel2.Padding = new Padding(10);
+            tableLayoutPanel2.RowCount = 3;
+            tableLayoutPanel2.RowStyles.Add(new RowStyle());
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 75.47893F));
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 24.5210724F));
+            tableLayoutPanel2.Size = new Size(901, 1136);
+            tableLayoutPanel2.TabIndex = 3;
+            // 
+            // categoriesLayout
+            // 
+            categoriesLayout.Dock = DockStyle.Fill;
+            categoriesLayout.Location = new Point(13, 871);
+            categoriesLayout.Name = "categoriesLayout";
+            categoriesLayout.Size = new Size(875, 252);
+            categoriesLayout.TabIndex = 2;
+            // 
+            // textBoxBarcode
+            // 
+            textBoxBarcode.Dock = DockStyle.Fill;
+            textBoxBarcode.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            textBoxBarcode.Location = new Point(10, 10);
+            textBoxBarcode.Margin = new Padding(0, 0, 0, 15);
+            textBoxBarcode.Name = "textBoxBarcode";
+            textBoxBarcode.PlaceholderText = "Barcode";
+            textBoxBarcode.Size = new Size(881, 50);
+            textBoxBarcode.TabIndex = 0;
+            textBoxBarcode.KeyDown += BarcodeTextBox_KeyPress;
+            // 
+            // productsLayout
+            // 
+            productsLayout.AutoScroll = true;
+            productsLayout.BackColor = SystemColors.AppWorkspace;
+            productsLayout.Dock = DockStyle.Fill;
+            productsLayout.Location = new Point(10, 75);
+            productsLayout.Margin = new Padding(0);
+            productsLayout.Name = "productsLayout";
+            productsLayout.Padding = new Padding(15);
+            productsLayout.Size = new Size(881, 793);
+            productsLayout.TabIndex = 1;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1724, 1052);
+            ClientSize = new Size(1835, 1136);
             Controls.Add(splitContainer1);
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
@@ -244,12 +270,13 @@
             WindowState = FormWindowState.Maximized;
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
-            splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)cartDataGrid).EndInit();
+            tableLayoutPanel2.ResumeLayout(false);
+            tableLayoutPanel2.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -270,5 +297,6 @@
         private DataGridViewTextBoxColumn UnitPrice;
         private DataGridViewTextBoxColumn Discount;
         private DataGridViewTextBoxColumn Total;
+        private TableLayoutPanel tableLayoutPanel2;
     }
 }

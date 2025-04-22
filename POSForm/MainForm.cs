@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using System.Diagnostics;
+using System.Windows.Forms;
+using Microsoft.VisualBasic.Logging;
 using POSLib.Exceptions;
 using POSLib.Models;
 using POSLib.Repositories;
@@ -9,14 +11,14 @@ namespace POSForm
     public partial class MainForm : Form
     {
 
-        private static string connStr = "Data Source=pos.db";
-        private static UserRepository userRepo = new(connStr);
-        private static AuthService authService = new(userRepo);
-        private static ProductRepository productRepo = new(connStr);
+        private static readonly string connStr = "Data Source=pos.db";
+        private static readonly UserRepository userRepo = new(connStr);
+        private static readonly AuthService authService = new(userRepo);
+        private static readonly ProductRepository productRepo = new(connStr);
 
-        private User _user;
-        private ProductService _productService;
-        private CartService _cartService = new();
+        private readonly User _user = null!;
+        private readonly ProductService _productService = null!;
+        private readonly CartService cart = new();
 
         public MainForm()
         {
@@ -32,76 +34,39 @@ namespace POSForm
             _productService = new ProductService(productRepo, _user);
 
             InitializeComponent();
-            CalculateGrandTotal();
 
             foreach (Product product in _productService.GetAllProducts())
             {
-                AddProductToCategory(product);
+                ProductControl productPanel = new();
+                productPanel.InitializeProduct(product);
+                productPanel.ProductClicked += (sender, p) =>
+                {
+                    cart.Add(product);
+                };
+                productsLayout.Controls.Add(productPanel);
             }
 
             cartDataGrid.AutoGenerateColumns = false;
-            cartDataGrid.DataSource = new BindingSource(_cartService.CartItems, null);
+            cartDataGrid.DataSource = new BindingSource(cart.CartItems, null);
+
+            Binding grandTotalBinding = new("Text", cart, "Total");
+
+            grandTotalBinding.Format += (s, e) =>
+            {
+                if (e.Value is double total)
+                {
+                    e.Value = $"Total: {total:C}";
+                }
+            };
+
+            label1.DataBindings.Add(grandTotalBinding);
         }
-
-        private void AddProductToCategory(Product product)
-        {
-            FlowLayoutPanel productsPanel = productsLayout;
-
-            // Create product panel
-            Panel productPanel = new Panel
-            {
-                Size = new Size(100, 120),
-                BorderStyle = BorderStyle.FixedSingle,
-                Margin = new Padding(5)
-            };
-
-            // Product image
-            PictureBox image = new PictureBox
-            {
-                Size = new Size(90, 70),
-                Location = new Point(5, 5),
-                BackColor = Color.LightGray,
-                SizeMode = PictureBoxSizeMode.Zoom
-            };
-            productPanel.Controls.Add(image);
-
-            // Product name
-            Label nameLabel = new Label
-            {
-                Text = product.Name,
-                Location = new Point(5, 80),
-                Size = new Size(90, 20),
-                TextAlign = ContentAlignment.MiddleCenter
-            };
-
-            productPanel.Controls.Add(nameLabel);
-
-            // Product price
-            Label priceLabel = new Label
-            {
-                Text = $"${product.Price:F2}",
-                Location = new Point(5, 100),
-                Size = new Size(90, 20),
-                TextAlign = ContentAlignment.MiddleCenter
-            };
-            productPanel.Controls.Add(priceLabel);
-
-            // Add click event to add product to cart
-            productPanel.Click += (sender, e) => AddProductToCart(product);
-            image.Click += (sender, e) => AddProductToCart(product);
-            nameLabel.Click += (sender, e) => AddProductToCart(product);
-            priceLabel.Click += (sender, e) => AddProductToCart(product);
-
-            // Add to the flow panel
-            productsPanel.Controls.Add(productPanel);
-        }
-
-        private void buttonPay_Click(object sender, EventArgs e)
+        private void PayButton_Click(object sender, EventArgs e)
         {
             // TODO: Implement payment logic
         }
 
-        private void textBoxBarcode_KeyDown(object sender, KeyEventArgs e)
+        private void BarcodeTextBox_KeyPress(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
@@ -109,7 +74,7 @@ namespace POSForm
                 Product product = _productService.GetProductByBarcode(barcode);
                 if (product != null)
                 {
-                    AddProductToCart(product);
+                    cart.Add(product);
                     textBoxBarcode.Clear();
                 }
                 else
@@ -119,30 +84,23 @@ namespace POSForm
             }
         }
 
-        private void AddProductToCart(Product product)
-        {
-            _cartService.AddToCart(product);
-        }
 
-
-        /// <summary>
-        /// Calculates the total amount in the cart and updates the label.
-        /// </summary>
-        private void CalculateGrandTotal()
+        private void CartGridCell_DoubleClickOrClick(object sender, DataGridViewCellEventArgs e)
         {
-            label1.Text = $"Total: {_cartService.GetTotal():C}";
-        }
-
-        private void cartDataGrid_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            
-            if (cartDataGrid.Columns[e.ColumnIndex].Name == "Decrement" && e.RowIndex >= 0)
+            if (e.ColumnIndex < 0 || e.RowIndex < 0)
             {
-                _cartService.CartItems.ElementAt(e.RowIndex).Decrement();
+                return;
             }
-            else if (cartDataGrid.Columns[e.ColumnIndex].Name == "Increment" && e.RowIndex >= 0)
+            string columnName = cartDataGrid.Columns[e.ColumnIndex].Name;
+            CartItem cartItem = cart.CartItems.ElementAt(e.RowIndex);
+
+            if (columnName == "Decrement")
             {
-                _cartService.CartItems.ElementAt(e.RowIndex).Increment();
+                cartItem.Decrement();
+            }
+            else if (columnName == "Increment")
+            {
+                cartItem.Increment();
             }
         }
     }
