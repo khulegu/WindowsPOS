@@ -1,3 +1,9 @@
+using System;
+using System.Windows.Forms;
+using POSLib.Services;
+using POSLib.Models;
+using POSLib.Repositories;
+
 namespace POSForm
 {
     internal static class Program
