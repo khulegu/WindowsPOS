@@ -39,8 +39,7 @@ namespace POSLib.Models
         public double Total => Product.Price * Quantity;
         public string Discount => "0%";
 
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected void OnPropertyChanged(string propertyName)
         {

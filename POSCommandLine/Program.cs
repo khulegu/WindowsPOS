@@ -16,7 +16,7 @@ internal class Program
     var productRepo = new ProductRepository(connStr);
 
     var authService = new AuthService(userRepo);
-    var cartService = new CartService();
+    var cartService = new Cart();
 
     var user = authService.Login("manager", "1234");
 
@@ -55,8 +55,7 @@ internal class Program
 
     cartService.Add(prod);
 
-    var total = cartService.GetTotal();
-
+    var total = cartService.Total;
     Console.WriteLine($"Total: {total}");
   }
 }

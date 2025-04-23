@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel;
-using POSLib.Models;
 
-namespace POSLib.Services
+namespace POSLib.Models
 {
-    public class CartService: INotifyPropertyChanged
+    public class Cart: INotifyPropertyChanged
     {
         private readonly Dictionary<string, CartItem> _cart = [];
 

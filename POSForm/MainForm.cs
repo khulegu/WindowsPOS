@@ -1,8 +1,4 @@
-﻿using System.Diagnostics;
-using System.Windows.Forms;
-using Microsoft.VisualBasic.Logging;
-using POSLib.Exceptions;
-using POSLib.Models;
+﻿using POSLib.Models;
 using POSLib.Repositories;
 using POSLib.Services;
 
@@ -16,15 +12,16 @@ namespace POSForm
         private static readonly AuthService authService = new(userRepo);
         private static readonly ProductRepository productRepo = new(connStr);
 
-        private readonly User _user = null!;
+        private readonly User? _user = null;
         private readonly ProductService _productService = null!;
-        private readonly CartService cart = new();
+        private readonly Cart cart = new();
 
         public MainForm()
         {
             DatabaseInitializer.InitializeDatabase(connStr);
 
             _user = authService.Login("manager", "1234");
+
             if (_user == null)
             {
                 MessageBox.Show("Login failed");

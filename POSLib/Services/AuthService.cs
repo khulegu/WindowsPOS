@@ -3,11 +3,11 @@ using POSLib.Repositories;
 
 namespace POSLib.Services
 {
-    public class AuthService
+    public class AuthService(IUserRepository userRepo)
     {
-        private readonly IUserRepository _userRepo;
-        public AuthService(IUserRepository userRepo) => _userRepo = userRepo;
-        public User Login(string username, string password)
+        private readonly IUserRepository _userRepo = userRepo;
+
+        public User? Login(string username, string password)
         {
             return _userRepo.GetUser(username, password);
         }
