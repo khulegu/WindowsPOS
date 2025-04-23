@@ -1,4 +1,8 @@
-
+using System;
+using System.Windows.Forms;
+using POSLib.Services;
+using POSLib.Models;
+using POSLib.Repositories;
 
 namespace POSForm
 {
@@ -10,11 +14,20 @@ namespace POSForm
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+
+            var connStr = "Data Source=pos.db";
+            var userRepo = new UserRepository(connStr);
+            var authService = new AuthService(userRepo);
+
+            LoginForm loginForm = new LoginForm(authService);
+            Application.Run(loginForm);
+
+            if (loginForm.DialogResult == DialogResult.OK)
+            {
+                Application.Run(new MainForm(loginForm.User));
+            }
         }
     }
 }
