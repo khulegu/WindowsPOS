@@ -8,26 +8,15 @@ namespace POSForm
     {
 
         private static readonly string connStr = "Data Source=pos.db";
-        private static readonly UserRepository userRepo = new(connStr);
-        private static readonly AuthService authService = new(userRepo);
         private static readonly ProductRepository productRepo = new(connStr);
 
-        private readonly User? _user = null;
-        private readonly ProductService _productService = null!;
+        private readonly User _user;
+        private readonly ProductService _productService;
         private readonly Cart cart = new();
 
-        public MainForm()
+        public MainForm(User user)
         {
-            DatabaseInitializer.InitializeDatabase(connStr);
-
-            _user = authService.Login("manager", "1234");
-
-            if (_user == null)
-            {
-                MessageBox.Show("Login failed");
-                return;
-            }
-
+            _user = user;
             _productService = new ProductService(productRepo, _user);
 
             InitializeComponent();
