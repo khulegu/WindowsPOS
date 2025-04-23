@@ -9,6 +9,7 @@ namespace POSForm
     public partial class LoginForm : Form
     {
         private readonly AuthService _authService;
+        public User? User { get; private set; }
 
         public LoginForm(AuthService authService)
         {
@@ -25,9 +26,9 @@ namespace POSForm
 
             if (user != null)
             {
-                this.Hide();
-                MainForm mainForm = new MainForm(user);
-                mainForm.Show();
+                User = user;
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
             else
             {
