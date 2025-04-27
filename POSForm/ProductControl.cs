@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Xml;
 using POSLib.Models;
 
 namespace POSForm

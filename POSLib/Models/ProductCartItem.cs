@@ -8,7 +8,8 @@ namespace POSLib.Models
         public required Product Product { get; set; }
 
         private int _quantity;
-        public int Quantity {
+        public int Quantity
+        {
             get => _quantity;
             set
             {

@@ -1,8 +1,5 @@
-using System;
-using System.Windows.Forms;
-using POSLib.Services;
 using POSLib.Models;
-using POSLib.Repositories;
+using POSLib.Services;
 
 namespace POSForm
 {

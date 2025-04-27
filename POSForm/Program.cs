@@ -1,17 +1,14 @@
-using System;
-using System.Windows.Forms;
-using POSLib.Services;
-using POSLib.Models;
 using POSLib.Repositories;
+using POSLib.Services;
 
 namespace POSForm
 {
     internal static class Program
     {
         static readonly string connStr = "Data Source=pos.db";
-        
 
-        
+
+
         [STAThread]
         static void Main()
         {

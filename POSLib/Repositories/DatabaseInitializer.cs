@@ -174,7 +174,7 @@ namespace POSLib.Repositories
                 CreateProductIfDoesntExist(connection, "Iced Tea (Peach)", 2.00, "559988776655", "Beverages", "https://loremflickr.com/320/240");
                 CreateProductIfDoesntExist(connection, "Almonds (Bag)", 7.50, "991122334455", "Snacks", "https://loremflickr.com/320/240");
                 CreateProductIfDoesntExist(connection, "Ground Beef", 9.50, "229988776655", "Meat & Seafood", "https://loremflickr.com/320/240");
-                CreateProductIfDoesntExist(connection, "Rice (Basmati)", 4.25, "771122334455", "Pantry", "https://loremflickr.com/320/240"  );
+                CreateProductIfDoesntExist(connection, "Rice (Basmati)", 4.25, "771122334455", "Pantry", "https://loremflickr.com/320/240");
                 CreateProductIfDoesntExist(connection, "Butter (Stick)", 2.75, "339988776655", "Dairy & Cheese", "https://loremflickr.com/320/240");
                 CreateProductIfDoesntExist(connection, "Green Tea Bags", 6.75, "881122334455", "Beverages", "https://loremflickr.com/320/240");
                 CreateProductIfDoesntExist(connection, "Pretzels", 3.50, "449988776655", "Snacks", "https://loremflickr.com/320/240");

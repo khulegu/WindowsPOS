@@ -28,7 +28,7 @@ namespace POSLib.Services
         }
 
         public Product? GetProductByBarcode(string barcode) => _productRepo.GetByBarcode(barcode);
-        
+
         public void AddProduct(Product product)
         {
             if (_user.Permissions.Contains(Permission.AddProducts) == false)
