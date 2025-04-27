@@ -24,7 +24,6 @@ namespace POSLib.Services
             {
                 Categories.Add(category);
             }
-            _selectedCategory = Categories.FirstOrDefault();
             FillProductsByCategory(_selectedCategory);
         }
 

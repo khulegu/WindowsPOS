@@ -18,6 +18,8 @@ namespace POSForm
             ApplicationConfiguration.Initialize();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            DatabaseInitializer.InitializeDatabase(connStr);
+
             UserRepository userRepo = new(connStr);
             AuthService authService = new(userRepo);
             ProductRepository productRepo = new(connStr);

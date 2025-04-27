@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using System.Diagnostics;
+using Microsoft.Data.Sqlite;
 using POSLib.Exceptions;
 using POSLib.Models;
 
@@ -17,6 +18,7 @@ namespace POSLib.Repositories
         /// <returns></returns>
         private Product MapProduct(SqliteDataReader reader)
         {
+            Debug.WriteLine(reader.IsDBNull(reader.GetOrdinal("imageUrl")) ? "NULL" : reader.GetString(reader.GetOrdinal("imageUrl")));
             return new Product
             {
                 Id = reader.GetInt32(reader.GetOrdinal("id")),
@@ -27,7 +29,8 @@ namespace POSLib.Repositories
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("categoryId")),
                     Name = reader.GetString(reader.GetOrdinal("categoryName"))
-                }
+                },
+                ImageUrl = reader.IsDBNull(reader.GetOrdinal("imageUrl")) ? null : reader.GetString(reader.GetOrdinal("imageUrl"))
             };
         }
 
@@ -43,7 +46,7 @@ namespace POSLib.Repositories
 
             using var command = connection.CreateCommand();
             command.CommandText = @"
-                SELECT p.id, p.name, p.price, p.barcode, c.id as categoryId, c.name as categoryName
+                SELECT p.id, p.name, p.price, p.barcode, c.id as categoryId, c.name as categoryName, p.imageUrl
                 FROM Products p
                 JOIN ProductCategories c ON p.categoryId = c.id
             ";
@@ -69,7 +72,7 @@ namespace POSLib.Repositories
 
             using var command = connection.CreateCommand();
             command.CommandText = @"
-                SELECT p.id, p.name, p.price, p.barcode, c.id as categoryId, c.name as categoryName
+                SELECT p.id, p.name, p.price, p.barcode, c.id as categoryId, c.name as categoryName, p.imageUrl
                 FROM Products p
                 JOIN ProductCategories c ON p.categoryId = c.id
                 WHERE c.id = $categoryId
@@ -96,7 +99,7 @@ namespace POSLib.Repositories
 
             using var command = connection.CreateCommand();
             command.CommandText = @"
-                SELECT p.id, p.name, p.price, p.barcode, c.id as categoryId, c.name as categoryName
+                SELECT p.id, p.name, p.price, p.barcode, c.id as categoryId, c.name as categoryName, p.imageUrl
                 FROM Products p
                 JOIN ProductCategories c ON p.categoryId = c.id
                 WHERE p.barcode = $barcode
@@ -118,12 +121,12 @@ namespace POSLib.Repositories
 
             using var command = connection.CreateCommand();
 
-            command.CommandText = "INSERT INTO Products (name, price, barcode, categoryId) VALUES ($name, $price, $barcode, $categoryId)";
+            command.CommandText = "INSERT INTO Products (name, price, barcode, categoryId, imageUrl) VALUES ($name, $price, $barcode, $categoryId, $imageUrl)";
             command.Parameters.AddWithValue("$name", product.Name);
             command.Parameters.AddWithValue("$price", product.Price);
             command.Parameters.AddWithValue("$barcode", product.Barcode);
             command.Parameters.AddWithValue("$categoryId", product.Category.Id);
-
+            command.Parameters.AddWithValue("$imageUrl", product.ImageUrl ?? (object)DBNull.Value);
             try
             {
                 command.ExecuteNonQuery();
@@ -145,11 +148,13 @@ namespace POSLib.Repositories
 
             using var command = connection.CreateCommand();
 
-            command.CommandText = "UPDATE Products SET name = $name, price = $price, barcode = $barcode WHERE id = $id";
+            command.CommandText = "UPDATE Products SET name = $name, price = $price, barcode = $barcode WHERE id = $id, categoryId = $categoryId, imageUrl = $imageUrl";
             command.Parameters.AddWithValue("$name", product.Name);
             command.Parameters.AddWithValue("$price", product.Price);
             command.Parameters.AddWithValue("$barcode", product.Barcode);
             command.Parameters.AddWithValue("$id", product.Id);
+            command.Parameters.AddWithValue("$categoryId", product.Category.Id);
+            command.Parameters.AddWithValue("$imageUrl", product.ImageUrl ?? (object)DBNull.Value);
 
             command.ExecuteNonQuery();
         }

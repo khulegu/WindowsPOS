@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProductControl));
             labelPrice = new Label();
             labelName = new Label();
             pictureBox = new PictureBox();
@@ -64,7 +63,6 @@
             pictureBox.BackColor = Color.WhiteSmoke;
             pictureBox.BackgroundImageLayout = ImageLayout.None;
             pictureBox.Dock = DockStyle.Fill;
-            pictureBox.Image = (Image)resources.GetObject("pictureBox.Image");
             pictureBox.Location = new Point(3, 3);
             pictureBox.Name = "pictureBox";
             pictureBox.Size = new Size(192, 194);

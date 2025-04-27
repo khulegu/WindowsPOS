@@ -33,8 +33,8 @@
             // 
             // nameLabel
             // 
+            nameLabel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             nameLabel.AutoSize = true;
-            nameLabel.Dock = DockStyle.Fill;
             nameLabel.Location = new Point(0, 0);
             nameLabel.Name = "nameLabel";
             nameLabel.Size = new Size(78, 32);

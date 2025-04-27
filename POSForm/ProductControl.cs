@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System.Diagnostics;
+using System.Xml;
 using POSLib.Models;
 
 namespace POSForm
@@ -18,15 +19,23 @@ namespace POSForm
             labelName.Text = product.Name;
             labelPrice.Text = $"${product.Price:F2}";
             labelBarcode.Text = product.Barcode;
+            if (product.ImageUrl != null)
+            {
+                Debug.WriteLine($"Loading image from {product.ImageUrl}");
+                pictureBox.LoadAsync(product.ImageUrl);
+                pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            }
             this.Click += ProductPanel_Click;
             pictureBox.Click += ProductPanel_Click;
             labelName.Click += ProductPanel_Click;
             labelPrice.Click += ProductPanel_Click;
+            labelBarcode.Click += ProductPanel_Click;
 
             this.DoubleClick += ProductPanel_Click;
             pictureBox.DoubleClick += ProductPanel_Click;
             labelName.DoubleClick += ProductPanel_Click;
             labelPrice.DoubleClick += ProductPanel_Click;
+            labelBarcode.DoubleClick += ProductPanel_Click;
 
             _product = product;
         }

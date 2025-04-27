@@ -83,6 +83,7 @@ namespace POSForm
             };
 
             _productService.InitializeProducts();
+            _productService.SelectedCategory = _productService.Categories.FirstOrDefault();
 
             /// Cart data grid
             cartDataGrid.AutoGenerateColumns = false;

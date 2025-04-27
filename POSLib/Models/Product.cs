@@ -7,5 +7,6 @@
         public double Price { get; set; }
         public required string Barcode { get; set; }
         public required ProductCategory Category { get; set; }
+        public required string? ImageUrl { get; set; }
     }
 }
