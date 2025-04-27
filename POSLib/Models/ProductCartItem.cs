@@ -1,9 +1,10 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 
 namespace POSLib.Models
 {
-    public class CartItem : INotifyPropertyChanged
+    public class ProductCartItem : ICartItem
     {
+
         public required Product Product { get; set; }
 
         private int _quantity;
@@ -16,10 +17,11 @@ namespace POSLib.Models
                     _quantity = value;
                     OnPropertyChanged(nameof(Quantity));
                     OnPropertyChanged(nameof(Total));
-
                 }
             }
         }
+
+        public string Barcode => Product.Barcode;
 
         public void Increment()
         {

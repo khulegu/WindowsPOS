@@ -8,24 +8,27 @@ namespace POSForm
 {
     internal static class Program
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
+        static readonly string connStr = "Data Source=pos.db";
+        
+
+        
         [STAThread]
         static void Main()
         {
             ApplicationConfiguration.Initialize();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            var connStr = "Data Source=pos.db";
-            var userRepo = new UserRepository(connStr);
-            var authService = new AuthService(userRepo);
+            UserRepository userRepo = new(connStr);
+            AuthService authService = new(userRepo);
+            ProductRepository productRepo = new(connStr);
 
-            LoginForm loginForm = new LoginForm(authService);
+            LoginForm loginForm = new(authService);
             Application.Run(loginForm);
 
-            if (loginForm.DialogResult == DialogResult.OK)
+            if (loginForm.DialogResult == DialogResult.OK && loginForm.User != null)
             {
+                var user = loginForm.User;
+                var productService = new ProductService(productRepo, user);
                 Application.Run(new MainForm(loginForm.User));
             }
         }

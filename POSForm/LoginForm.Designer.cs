@@ -15,52 +15,95 @@ namespace POSForm
 
         private void InitializeComponent()
         {
-            this.usernameTextBox = new System.Windows.Forms.TextBox();
-            this.passwordTextBox = new System.Windows.Forms.TextBox();
-            this.loginButton = new System.Windows.Forms.Button();
-            this.SuspendLayout();
-            // 
-            // usernameTextBox
-            // 
-            this.usernameTextBox.Location = new System.Drawing.Point(12, 12);
-            this.usernameTextBox.Name = "usernameTextBox";
-            this.usernameTextBox.Size = new System.Drawing.Size(260, 20);
-            this.usernameTextBox.TabIndex = 0;
+            passwordTextBox = new TextBox();
+            loginButton = new Button();
+            label1 = new Label();
+            usernameTextBox = new TextBox();
+            label2 = new Label();
+            label3 = new Label();
+            SuspendLayout();
             // 
             // passwordTextBox
             // 
-            this.passwordTextBox.Location = new System.Drawing.Point(12, 38);
-            this.passwordTextBox.Name = "passwordTextBox";
-            this.passwordTextBox.Size = new System.Drawing.Size(260, 20);
-            this.passwordTextBox.TabIndex = 1;
-            this.passwordTextBox.UseSystemPasswordChar = true;
+            passwordTextBox.Location = new Point(43, 266);
+            passwordTextBox.Margin = new Padding(6, 7, 6, 7);
+            passwordTextBox.Name = "passwordTextBox";
+            passwordTextBox.PasswordChar = '*';
+            passwordTextBox.Size = new Size(387, 39);
+            passwordTextBox.TabIndex = 1;
+            passwordTextBox.UseSystemPasswordChar = true;
             // 
             // loginButton
             // 
-            this.loginButton.Location = new System.Drawing.Point(12, 64);
-            this.loginButton.Name = "loginButton";
-            this.loginButton.Size = new System.Drawing.Size(260, 23);
-            this.loginButton.TabIndex = 2;
-            this.loginButton.Text = "Login";
-            this.loginButton.UseVisualStyleBackColor = true;
-            this.loginButton.Click += new System.EventHandler(this.LoginButton_Click);
+            loginButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            loginButton.Location = new Point(166, 359);
+            loginButton.Margin = new Padding(6, 7, 6, 7);
+            loginButton.Name = "loginButton";
+            loginButton.Size = new Size(264, 60);
+            loginButton.TabIndex = 2;
+            loginButton.Text = "Login";
+            loginButton.UseVisualStyleBackColor = true;
+            loginButton.Click += LoginButton_Click;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Location = new Point(43, 42);
+            label1.Name = "label1";
+            label1.Size = new Size(122, 51);
+            label1.TabIndex = 4;
+            label1.Text = "Login";
+            label1.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // usernameTextBox
+            // 
+            usernameTextBox.Location = new Point(43, 175);
+            usernameTextBox.Margin = new Padding(6, 7, 6, 7);
+            usernameTextBox.Name = "usernameTextBox";
+            usernameTextBox.Size = new Size(387, 39);
+            usernameTextBox.TabIndex = 0;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(43, 136);
+            label2.Name = "label2";
+            label2.Size = new Size(121, 32);
+            label2.TabIndex = 7;
+            label2.Text = "Username";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(43, 227);
+            label3.Name = "label3";
+            label3.Size = new Size(111, 32);
+            label3.TabIndex = 8;
+            label3.Text = "Password";
             // 
             // LoginForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 101);
-            this.Controls.Add(this.loginButton);
-            this.Controls.Add(this.passwordTextBox);
-            this.Controls.Add(this.usernameTextBox);
-            this.Name = "LoginForm";
-            this.Text = "Login";
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new SizeF(13F, 32F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(490, 472);
+            Controls.Add(label3);
+            Controls.Add(label2);
+            Controls.Add(loginButton);
+            Controls.Add(usernameTextBox);
+            Controls.Add(passwordTextBox);
+            Controls.Add(label1);
+            Margin = new Padding(6, 7, 6, 7);
+            Name = "LoginForm";
+            Text = "Login";
+            ResumeLayout(false);
+            PerformLayout();
         }
-
-        private System.Windows.Forms.TextBox usernameTextBox;
         private System.Windows.Forms.TextBox passwordTextBox;
         private System.Windows.Forms.Button loginButton;
+        private Label label1;
+        private TextBox usernameTextBox;
+        private Label label2;
+        private Label label3;
     }
 }

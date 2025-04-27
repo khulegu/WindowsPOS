@@ -1,40 +1,92 @@
-﻿using POSLib.Exceptions;
+﻿using System.ComponentModel;
+using System.Diagnostics;
+using POSLib.Exceptions;
 using POSLib.Models;
 using POSLib.Repositories;
 
 namespace POSLib.Services
 {
-    public class ProductService
+    public class ProductService(IProductRepository productRepo, User user) : INotifyPropertyChanged
     {
-        private readonly IProductRepository _productRepo;
-        private readonly User _user;
-        public ProductService(IProductRepository productRepo, User user)
+        private readonly IProductRepository _productRepo = productRepo;
+        private readonly User _user = user;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public BindingList<Product> ProductsFiltered { get; } = [];
+        public BindingList<ProductCategory> Categories { get; } = [];
+
+        public void InitializeProducts()
         {
-            _productRepo = productRepo;
-            _user = user;
+            ProductsFiltered.Clear();
+            Categories.Clear();
+            foreach (ProductCategory category in _productRepo.GetAllCategories())
+            {
+                Categories.Add(category);
+            }
+            _selectedCategory = Categories.FirstOrDefault();
+            FillProductsByCategory(_selectedCategory);
         }
 
-        public List<Product> GetAllProducts() => _productRepo.GetAll();
-        public Product GetProductByBarcode(string barcode) => _productRepo.GetByBarcode(barcode);
+        public Product? GetProductByBarcode(string barcode) => _productRepo.GetByBarcode(barcode);
+        
         public void AddProduct(Product product)
         {
-            if (_user.Role != Role.Manager)
-                throw new ForbiddenException("Зөвхөн менежер бараа нэмэж болно.");
+            if (_user.Permissions.Contains(Permission.AddProducts) == false)
+                throw new ForbiddenException("Танд бараа нэмэх эрх байхгүй.");
             _productRepo.Add(product);
         }
 
         public void UpdateProduct(Product product)
         {
-            if (_user.Role != Role.Manager)
-                throw new ForbiddenException("Зөвхөн менежер бараа засаж болно.");
+            if (_user.Permissions.Contains(Permission.EditProducts) == false)
+                throw new ForbiddenException("Танд бараа засах эрх байхгүй.");
             _productRepo.Update(product);
         }
 
         public void DeleteProduct(int id)
         {
             if (_user.Role != Role.Manager)
-                throw new ForbiddenException("Зөвхөн менежер бараа устгаж болно.");
+                throw new ForbiddenException("Танд бараа устгах эрх байхгүй.");
             _productRepo.Delete(id);
+        }
+
+        private ProductCategory? _selectedCategory;
+        public ProductCategory? SelectedCategory
+        {
+            get => _selectedCategory;
+            set
+            {
+                if (_selectedCategory != value)
+                {
+                    Debug.WriteLine("SelectedCategory changed");
+                    _selectedCategory = value;
+                    ProductsFiltered.Clear();
+                    if (_selectedCategory != null)
+                    {
+                        FillProductsByCategory(_selectedCategory);
+                    }
+                    OnPropertyChanged(nameof(SelectedCategory));
+                }
+            }
+        }
+
+        private void FillProductsByCategory(ProductCategory? category)
+        {
+            ProductsFiltered.Clear();
+            if (category == null)
+            {
+                return;
+            }
+            foreach (Product product in _productRepo.GetAllByCategory(category.Id))
+            {
+                ProductsFiltered.Add(product);
+            }
+        }
+
+        protected virtual void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
     }
 }

@@ -206,5 +206,26 @@ namespace POSLib.Repositories
 
             command.ExecuteNonQuery();
         }
+
+        public List<ProductCategory> GetAllCategories()
+        {
+            var categories = new List<ProductCategory>();
+            using var connection = new SqliteConnection(_connStr);
+            connection.Open();
+
+            using var command = connection.CreateCommand();
+            command.CommandText = "SELECT id, name FROM ProductCategories";
+
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                categories.Add(new ProductCategory
+                {
+                    Id = reader.GetInt32(reader.GetOrdinal("id")),
+                    Name = reader.GetString(reader.GetOrdinal("name"))
+                });
+            }
+            return categories;
+        }
     }
 }
