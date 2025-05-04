@@ -46,7 +46,7 @@ namespace POSLib.Models
 
         public double Total
         {
-            get => CartItems.Sum(x => x.Price * x.Quantity);
+            get => CartItems.Sum(x => x.Total);
         }
 
         protected virtual void OnPropertyChanged(string property)

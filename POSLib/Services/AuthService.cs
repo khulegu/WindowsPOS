@@ -7,9 +7,14 @@ namespace POSLib.Services
     {
         private readonly IUserRepository _userRepo = userRepo;
 
-        public User? Login(string username, string password)
+        public User Login(string username, string password)
         {
-            return _userRepo.GetUser(username, password);
+            User? user =  _userRepo.GetUser(username, password);
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException("Invalid username or password.");
+            }
+            return user;
         }
     }
 }

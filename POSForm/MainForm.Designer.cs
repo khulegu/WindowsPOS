@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             MainSplitContainer = new SplitContainer();
             tableLayoutPanel1 = new TableLayoutPanel();
             cartDataGrid = new DataGridView();
@@ -139,8 +139,8 @@
             // 
             Quantity.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             Quantity.DataPropertyName = "Quantity";
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Quantity.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Quantity.DefaultCellStyle = dataGridViewCellStyle1;
             Quantity.HeaderText = "Quantity";
             Quantity.MinimumWidth = 10;
             Quantity.Name = "Quantity";
@@ -190,8 +190,9 @@
             // 
             // buttonPay
             // 
-            buttonPay.BackColor = Color.LimeGreen;
+            buttonPay.BackColor = SystemColors.Control;
             buttonPay.Dock = DockStyle.Fill;
+            buttonPay.FlatStyle = FlatStyle.System;
             buttonPay.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             buttonPay.ForeColor = Color.White;
             buttonPay.Location = new Point(10, 740);
@@ -269,11 +270,11 @@
             productsLayout.Size = new Size(931, 730);
             productsLayout.TabIndex = 1;
             // 
-            // menuStrip1
+            // menuStrip
             // 
             menuStrip.ImageScalingSize = new Size(32, 32);
             menuStrip.Location = new Point(0, 0);
-            menuStrip.Name = "menuStrip1";
+            menuStrip.Name = "menuStrip";
             menuStrip.Size = new Size(1385, 24);
             menuStrip.TabIndex = 1;
             menuStrip.Text = "menuStrip";
@@ -282,12 +283,12 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI Black", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.ForeColor = SystemColors.HotTrack;
+            label1.ForeColor = SystemColors.Desktop;
             label1.Location = new Point(3, 0);
             label1.Name = "label1";
-            label1.Size = new Size(424, 45);
+            label1.Size = new Size(223, 45);
             label1.TabIndex = 2;
-            label1.Text = "KHULEGU SUPERMARKET";
+            label1.Text = "Supermarket";
             // 
             // dateLabel
             // 

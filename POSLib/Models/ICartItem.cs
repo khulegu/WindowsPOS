@@ -9,11 +9,7 @@ namespace POSLib.Models
         public double Total { get; }
         public string Name { get; }
         public string Discount { get; }
-
-        public int Quantity
-        {
-            get; set;
-        }
+        public int Quantity { get; set; }
         public void Increment();
         public void Decrement();
     }

@@ -16,6 +16,8 @@ namespace POSLib.Services
         public BindingList<Product> ProductsFiltered { get; } = [];
         public BindingList<ProductCategory> Categories { get; } = [];
 
+        private ProductCategory? _selectedCategory;
+
         public void InitializeProducts()
         {
             ProductsFiltered.Clear();
@@ -25,6 +27,23 @@ namespace POSLib.Services
                 Categories.Add(category);
             }
             FillProductsByCategory(_selectedCategory);
+        }
+        public ProductCategory? SelectedCategory
+        {
+            get => _selectedCategory;
+            set
+            {
+                if (_selectedCategory != value)
+                {
+                    _selectedCategory = value;
+                    ProductsFiltered.Clear();
+                    if (_selectedCategory != null)
+                    {
+                        FillProductsByCategory(_selectedCategory);
+                    }
+                    OnPropertyChanged(nameof(SelectedCategory));
+                }
+            }
         }
 
         public Product? GetProductByBarcode(string barcode) => _productRepo.GetByBarcode(barcode);
@@ -50,28 +69,8 @@ namespace POSLib.Services
             _productRepo.Delete(id);
         }
 
-        private ProductCategory? _selectedCategory;
-        public ProductCategory? SelectedCategory
-        {
-            get => _selectedCategory;
-            set
-            {
-                if (_selectedCategory != value)
-                {
-                    Debug.WriteLine("SelectedCategory changed");
-                    _selectedCategory = value;
-                    ProductsFiltered.Clear();
-                    if (_selectedCategory != null)
-                    {
-                        FillProductsByCategory(_selectedCategory);
-                    }
-                    OnPropertyChanged(nameof(SelectedCategory));
-                }
-            }
-        }
-
         private void FillProductsByCategory(ProductCategory? category)
-        {
+        { 
             ProductsFiltered.Clear();
             if (category == null)
             {

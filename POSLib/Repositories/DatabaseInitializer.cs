@@ -158,28 +158,26 @@ namespace POSLib.Repositories
                 CreateUserIfDoesntExist(connection, "cashier1", "1234", "Cashier");
                 CreateUserIfDoesntExist(connection, "cashier2", "1234", "Cashier");
 
-                CreateProductIfDoesntExist(connection, "Apples (Gala)", 2.50, "001122334455", "Produce", "https://media.istockphoto.com/id/184276818/photo/red-apple.jpg?s=612x612&w=0&k=20&c=NvO-bLsG0DJ_7Ii8SSVoKLurzjmV0Qi4eGfn6nW3l5w=");
-                CreateProductIfDoesntExist(connection, "Milk (Whole)", 4.00, "667788990011", "Dairy & Cheese", "https://atlas-content-cdn.pixelsquid.com/stock-images/milk-glass-Ka6B5N0-600.jpg");
-                CreateProductIfDoesntExist(connection, "Bagels (Plain)", 5.50, "111222333444", "Bakery", "https://loremflickr.com/320/320/bagels");
-                CreateProductIfDoesntExist(connection, "Orange Juice", 3.75, "555666777888", "Beverages", "https://loremflickr.com/320/320/orange-juice");
-                CreateProductIfDoesntExist(connection, "Peanut Butter", 6.00, "999000111222", "Pantry", "https://loremflickr.com/320/320/peanut-butter");
-                CreateProductIfDoesntExist(connection, "Chicken Breast (Pack)", 12.99, "222333444555", "Meat & Seafood", "https://loremflickr.com/320/320/chicken");
-                CreateProductIfDoesntExist(connection, "Pasta (Spaghetti)", 2.25, "777888999000", "Pantry", "https://loremflickr.com/320/320/pasta");
-                CreateProductIfDoesntExist(connection, "Yogurt (Strawberry)", 1.25, "333444555666", "Dairy & Cheese", "https://loremflickr.com/320/320/yogurt");
-                CreateProductIfDoesntExist(connection, "Coffee Beans (Arabica)", 15.00, "888999000111", "Beverages", "https://loremflickr.com/320/320/coffee");
-                CreateProductIfDoesntExist(connection, "Crackers (Saltine)", 3.00, "444555666777", "Snacks", "https://loremflickr.com/320/320/crackers");
-                CreateProductIfDoesntExist(connection, "Bananas", 1.99, "009988776655", "Produce", "https://loremflickr.com/320/320/bananas");
-                CreateProductIfDoesntExist(connection, "Eggs (Dozen)", 5.25, "665544332211", "Dairy & Cheese", "https://loremflickr.com/320/240");
-                CreateProductIfDoesntExist(connection, "Croissants", 4.75, "119988776655", "Bakery", "https://loremflickr.com/320/240");
-                CreateProductIfDoesntExist(connection, "Iced Tea (Peach)", 2.00, "559988776655", "Beverages", "https://loremflickr.com/320/240");
-                CreateProductIfDoesntExist(connection, "Almonds (Bag)", 7.50, "991122334455", "Snacks", "https://loremflickr.com/320/240");
-                CreateProductIfDoesntExist(connection, "Ground Beef", 9.50, "229988776655", "Meat & Seafood", "https://loremflickr.com/320/240");
-                CreateProductIfDoesntExist(connection, "Rice (Basmati)", 4.25, "771122334455", "Pantry", "https://loremflickr.com/320/240");
-                CreateProductIfDoesntExist(connection, "Butter (Stick)", 2.75, "339988776655", "Dairy & Cheese", "https://loremflickr.com/320/240");
-                CreateProductIfDoesntExist(connection, "Green Tea Bags", 6.75, "881122334455", "Beverages", "https://loremflickr.com/320/240");
-                CreateProductIfDoesntExist(connection, "Pretzels", 3.50, "449988776655", "Snacks", "https://loremflickr.com/320/240");
-
-                Console.WriteLine("Database initialization complete.");
+                CreateProductIfDoesntExist(connection, "Apples (Gala)", 2.50, "100001", "Produce", "https://media.istockphoto.com/id/184276818/photo/red-apple.jpg?s=612x612&w=0&k=20&c=NvO-bLsG0DJ_7Ii8SSVoKLurzjmV0Qi4eGfn6nW3l5w=");
+                CreateProductIfDoesntExist(connection, "Milk (Whole)", 4.00, "100003", "Dairy & Cheese", "https://atlas-content-cdn.pixelsquid.com/stock-images/milk-glass-Ka6B5N0-600.jpg");
+                CreateProductIfDoesntExist(connection, "Bagels (Plain)", 5.50, "100004", "Bakery", "https://loremflickr.com/320/320/bagels");
+                CreateProductIfDoesntExist(connection, "Orange Juice", 3.75, "100005", "Beverages", "https://loremflickr.com/320/320/orange-juice");
+                CreateProductIfDoesntExist(connection, "Peanut Butter", 6.00, "100006", "Pantry", "https://loremflickr.com/320/320/peanut-butter");
+                CreateProductIfDoesntExist(connection, "Chicken Breast (Pack)", 12.99, "100007", "Meat & Seafood", "https://loremflickr.com/320/320/chicken");
+                CreateProductIfDoesntExist(connection, "Pasta (Spaghetti)", 2.25, "100008", "Pantry", "https://loremflickr.com/320/320/pasta");
+                CreateProductIfDoesntExist(connection, "Yogurt (Strawberry)", 1.25, "100009", "Dairy & Cheese", "https://loremflickr.com/320/320/yogurt");
+                CreateProductIfDoesntExist(connection, "Coffee Beans (Arabica)", 15.00, "100010", "Beverages", "https://loremflickr.com/320/320/coffee");
+                CreateProductIfDoesntExist(connection, "Crackers (Saltine)", 3.00, "100011", "Snacks", "https://loremflickr.com/320/320/crackers");
+                CreateProductIfDoesntExist(connection, "Bananas", 1.99, "100012", "Produce", "https://loremflickr.com/320/320/bananas");
+                CreateProductIfDoesntExist(connection, "Eggs (Dozen)", 5.25, "100013", "Dairy & Cheese", "https://loremflickr.com/320/240");
+                CreateProductIfDoesntExist(connection, "Croissants", 4.75, "100014", "Bakery", "https://loremflickr.com/320/240");
+                CreateProductIfDoesntExist(connection, "Iced Tea (Peach)", 2.00, "100015", "Beverages", "https://loremflickr.com/320/240");
+                CreateProductIfDoesntExist(connection, "Almonds (Bag)", 7.50, "100016", "Snacks", "https://loremflickr.com/320/240");
+                CreateProductIfDoesntExist(connection, "Ground Beef", 9.50, "100017", "Meat & Seafood", "https://loremflickr.com/320/240");
+                CreateProductIfDoesntExist(connection, "Rice (Basmati)", 4.25, "100018", "Pantry", "https://loremflickr.com/320/240");
+                CreateProductIfDoesntExist(connection, "Butter (Stick)", 2.75, "100019", "Dairy & Cheese", "https://loremflickr.com/320/240");
+                CreateProductIfDoesntExist(connection, "Green Tea Bags", 6.75, "100020", "Beverages", "https://loremflickr.com/320/240");
+                CreateProductIfDoesntExist(connection, "Pretzels", 3.50, "100021", "Snacks", "https://loremflickr.com/320/240");
             }
             catch (SqliteException ex)
             {
