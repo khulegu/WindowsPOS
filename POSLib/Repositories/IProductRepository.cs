@@ -7,9 +7,7 @@ namespace POSLib.Repositories
         List<Product> GetAll();
         List<Product> GetAllByCategory(int categoryId);
         Product? GetByBarcode(string barcode);
-
         List<ProductCategory> GetAllCategories();
-
         void AddCategory(ProductCategory category);
         void UpdateCategory(ProductCategory category);
         void DeleteCategory(int id);

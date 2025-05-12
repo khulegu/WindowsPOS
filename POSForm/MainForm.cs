@@ -2,7 +2,7 @@
 using POSForm.Controls;
 using POSLib.Models;
 using POSLib.Repositories;
-using POSLib.Services;
+using POSLib.Controllers;
 
 namespace POSForm
 {
@@ -12,13 +12,13 @@ namespace POSForm
         private static readonly ProductRepository productRepo = new(connStr);
 
         private readonly User _user;
-        private readonly ProductService _productService;
+        private readonly ProductController _productService;
         private readonly Cart cart = new();
 
         public MainForm(User user)
         {
             _user = user;
-            _productService = new ProductService(productRepo, _user);
+            _productService = new ProductController(productRepo, _user);
 
             InitializeComponent();
             InitializeMenuStrip();
@@ -115,46 +115,28 @@ namespace POSForm
         {
             menuStrip.Items.Clear();
 
+
+            var permissions = _user.Permissions;
+            var permissionGroups = permissions.Select(p => p.GetPermissionGroup()).Distinct().ToList();
+
+            foreach (var permissionGroup in permissionGroups)
+            {
+                var permissionGroupMenuItem = new ToolStripMenuItem(permissionGroup);
+
+                foreach (var permission in permissions)
+                {
+                    if (permission.GetPermissionGroup() == permissionGroup)
+                    {
+                        permissionGroupMenuItem.DropDownItems.Add(new ToolStripMenuItem(permission.GetPermissionDescription()));
+                    }
+                }
+
+                menuStrip.Items.Add(permissionGroupMenuItem);
+            }
+
             var helpMenuItem = new ToolStripMenuItem("Help");
             helpMenuItem.Click += HelpMenuItem_Click;
-
-            if (_user.Role == Role.Manager)
-            {
-                var productMenuItem = new ToolStripMenuItem("Product");
-                var newProductMenuItem = new ToolStripMenuItem("New product");
-                var editProductMenuItem = new ToolStripMenuItem("Edit product");
-                var deleteProductMenuItem = new ToolStripMenuItem("Delete product");
-
-                var productCategoriesMenuItem = new ToolStripMenuItem("Categories");
-                var newCategoryMenuItem = new ToolStripMenuItem("New category");
-                var editCategoryMenuItem = new ToolStripMenuItem("Edit category");
-                var deleteCategoryMenuItem = new ToolStripMenuItem("Delete category");
-
-                productMenuItem.DropDownItems.Add(newProductMenuItem);
-                productMenuItem.DropDownItems.Add(editCategoryMenuItem);
-                productMenuItem.DropDownItems.Add(deleteProductMenuItem);
-
-                productCategoriesMenuItem.DropDownItems.Add(newCategoryMenuItem);
-                productCategoriesMenuItem.DropDownItems.Add(editCategoryMenuItem);
-                productCategoriesMenuItem.DropDownItems.Add(deleteCategoryMenuItem);
-
-                menuStrip.Items.Add(productMenuItem);
-                menuStrip.Items.Add(productCategoriesMenuItem);
-                menuStrip.Items.Add(helpMenuItem);
-            }
-            else if (_user.Role == Role.Cashier)
-            {
-                // Cashier Menu
-                var viewProductsMenuItem = new ToolStripMenuItem("View Products");
-                viewProductsMenuItem.Click += ViewProductsMenuItem_Click; // Add event handler
-
-                var productCategoriesMenuItem = new ToolStripMenuItem("Product Categories");
-                productCategoriesMenuItem.Click += ProductCategoriesMenuItem_Click; // Add event handler
-
-                menuStrip.Items.Add(viewProductsMenuItem);
-                menuStrip.Items.Add(productCategoriesMenuItem);
-                menuStrip.Items.Add(helpMenuItem);
-            }
+            menuStrip.Items.Add(helpMenuItem);
         }
 
         private void ViewProductsMenuItem_Click(object? sender, EventArgs e)
@@ -209,7 +191,9 @@ namespace POSForm
 
         private void PayButton_Click(object sender, EventArgs e)
         {
-            // TODO: Implement payment logic
+            ReceiptPrinter printer = new();
+            printer.PrintReceipt(cart.CartItems.ToList());
+            cart.CartItems.Clear();
         }
 
         private void BarcodeTextBox_KeyPress(object sender, KeyEventArgs e)

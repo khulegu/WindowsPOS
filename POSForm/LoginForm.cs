@@ -1,16 +1,16 @@
 using POSLib.Models;
-using POSLib.Services;
+using POSLib.Repositories;
 
 namespace POSForm
 {
     public partial class LoginForm : Form
     {
-        private readonly AuthService _authService;
+        private readonly IUserRepository _userRepo;
         public User? User { get; private set; }
 
-        public LoginForm(AuthService authService)
+        public LoginForm(IUserRepository userRepo)
         {
-            _authService = authService;
+            _userRepo = userRepo;
             InitializeComponent();
         }
 
@@ -19,7 +19,7 @@ namespace POSForm
             string username = usernameTextBox.Text;
             string password = passwordTextBox.Text;
 
-            User? user = _authService.Login(username, password);
+            User? user = _userRepo.Login(username, password);
 
             if (user != null)
             {

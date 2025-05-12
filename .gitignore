@@ -364,3 +364,5 @@ FodyWeavers.xsd
 
 # Sqlite database files
 *.db
+
+.DS_Store

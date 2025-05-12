@@ -1,4 +1,5 @@
 using POSLib.Repositories;
+using POSLib.Controllers;
 using POSLib.Services;
 
 namespace POSForm
@@ -27,7 +28,7 @@ namespace POSForm
             if (loginForm.DialogResult == DialogResult.OK && loginForm.User != null)
             {
                 var user = loginForm.User;
-                var productService = new ProductService(productRepo, user);
+                var productService = new ProductController(productRepo, user);
                 Application.Run(new MainForm(loginForm.User));
             }
         }

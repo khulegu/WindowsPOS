@@ -1,6 +1,7 @@
 ﻿using POSLib.Exceptions;
 using POSLib.Models;
 using POSLib.Repositories;
+using POSLib.Controllers;
 using POSLib.Services;
 
 internal class Program
@@ -28,7 +29,7 @@ internal class Program
 
         Console.WriteLine($"Welcome {user.Username}!");
 
-        var productService = new ProductService(productRepo, user);
+        var productService = new ProductController(productRepo, user);
 
         try
         {

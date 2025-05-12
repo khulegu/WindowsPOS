@@ -7,6 +7,11 @@ namespace POSLib.Repositories
     {
         private readonly string _connStr = connStr;
 
+        /// <summary>
+        /// Get the permissions for a user based on their role
+        /// </summary>
+        /// <param name="role">The role of the user</param>
+        /// <returns>The permissions for the user</returns>
         private static List<Permission> GetPermissions(Role role)
         {
             if (role == Role.Manager)
@@ -27,13 +32,21 @@ namespace POSLib.Repositories
             {
                 return [
                     Permission.ViewProducts,
+                    Permission.ViewCategories,
                     Permission.ViewHelp,
                 ];
             }
             return [];
         }
 
-        public User? GetUser(string username, string password)
+
+        /// <summary>
+        /// Get a user by username and password
+        /// </summary>
+        /// <param name="username">The username of the user</param>
+        /// <param name="password">The password of the user</param>
+        /// <returns>The user if found, otherwise null</returns>
+        public User? Login(string username, string password)
         {
             using var connection = new SqliteConnection(_connStr);
             connection.Open();

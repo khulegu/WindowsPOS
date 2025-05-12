@@ -31,5 +31,22 @@ namespace POSLib.Models
                 _ => throw new ArgumentOutOfRangeException(nameof(permission), permission, null)
             };
         }
+
+        public static string GetPermissionDescription(this Permission permission)
+        {
+            return permission switch
+            {
+                Permission.ViewProducts => "View Products",
+                Permission.AddProducts => "Add Products",
+                Permission.EditProducts => "Edit Products",
+                Permission.DeleteProducts => "Delete Products",
+                Permission.EditCategories => "Edit Categories",
+                Permission.ViewCategories => "View Categories",
+                Permission.AddCategories => "Add Categories",
+                Permission.DeleteCategories => "Delete Categories",
+                Permission.ViewHelp => "View Help",
+                _ => throw new ArgumentOutOfRangeException(nameof(permission), permission, null)
+            };
+        }
     }
 }

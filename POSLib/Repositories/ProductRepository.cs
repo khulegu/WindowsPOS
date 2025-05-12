@@ -12,10 +12,10 @@ namespace POSLib.Repositories
         public ProductRepository(string connStr) => _connStr = connStr;
 
         /// <summary>
-        /// Product-iig SqliteDataReader-saar maplah.
+        /// Map a SqliteDataReader to a Product object
         /// </summary>
-        /// <param name="reader"></param>
-        /// <returns></returns>
+        /// <param name="reader">The SqliteDataReader to map</param>
+        /// <returns>The mapped Product object</returns>
         private Product MapProduct(SqliteDataReader reader)
         {
             Debug.WriteLine(reader.IsDBNull(reader.GetOrdinal("imageUrl")) ? "NULL" : reader.GetString(reader.GetOrdinal("imageUrl")));
@@ -35,9 +35,9 @@ namespace POSLib.Repositories
         }
 
         /// <summary>
-        /// Buh product-iig avna.
+        /// Get all products
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A list of all products</returns>
         public List<Product> GetAll()
         {
             var products = new List<Product>();
@@ -60,10 +60,10 @@ namespace POSLib.Repositories
         }
 
         /// <summary>
-        /// Category-t baigaa product-uudiig avna.
+        /// Get all products by category
         /// </summary>
-        /// <param name="category"></param>
-        /// <returns></returns>
+        /// <param name="categoryId">The id of the category</param>
+        /// <returns>A list of all products in the category</returns>
         public List<Product> GetAllByCategory(int categoryId)
         {
             var products = new List<Product>();
@@ -88,10 +88,10 @@ namespace POSLib.Repositories
         }
 
         /// <summary>
-        /// Barcode-oor baraa haij avchirah. Oldoogui bol null utga butsaana.
+        /// Get a product by barcode
         /// </summary>
-        /// <param name="barcode"></param>
-        /// <returns></returns>
+        /// <param name="barcode">The barcode of the product</param>
+        /// <returns>The product if found, otherwise null</returns>
         public Product? GetByBarcode(string barcode)
         {
             using var connection = new SqliteConnection(_connStr);
@@ -114,6 +114,10 @@ namespace POSLib.Repositories
             return null;
         }
 
+        /// <summary>
+        /// Add a product
+        /// </summary>
+        /// <param name="product">The product to add</param>
         public void Add(Product product)
         {
             using var connection = new SqliteConnection(_connStr);
@@ -141,6 +145,10 @@ namespace POSLib.Repositories
             }
         }
 
+        /// <summary>
+        /// Update a product
+        /// </summary>
+        /// <param name="product">The product to update</param>
         public void Update(Product product)
         {
             using var connection = new SqliteConnection(_connStr);
@@ -159,6 +167,10 @@ namespace POSLib.Repositories
             command.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Delete a product
+        /// </summary>
+        /// <param name="id">The id of the product to delete</param>
         public void Delete(int id)
         {
             using var connection = new SqliteConnection(_connStr);
@@ -172,6 +184,10 @@ namespace POSLib.Repositories
             command.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Add a category
+        /// </summary>
+        /// <param name="category">The category to add</param>
         public void AddCategory(ProductCategory category)
         {
             using var connection = new SqliteConnection(_connStr);
@@ -185,6 +201,10 @@ namespace POSLib.Repositories
             command.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Update a category
+        /// </summary>
+        /// <param name="category">The category to update</param>
         public void UpdateCategory(ProductCategory category)
         {
             using var connection = new SqliteConnection(_connStr);
@@ -199,6 +219,10 @@ namespace POSLib.Repositories
             command.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Delete a category
+        /// </summary>
+        /// <param name="id">The id of the category to delete</param>
         public void DeleteCategory(int id)
         {
             using var connection = new SqliteConnection(_connStr);
@@ -212,6 +236,10 @@ namespace POSLib.Repositories
             command.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Get all categories
+        /// </summary>
+        /// <returns>A list of all categories</returns>
         public List<ProductCategory> GetAllCategories()
         {
             var categories = new List<ProductCategory>();
