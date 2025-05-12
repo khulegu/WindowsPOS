@@ -43,9 +43,9 @@ namespace POSLibTest
     [TestClass]
     public sealed class CartTest
     {
-        private MockCartItem _item1 = new MockCartItem { Barcode = "111", Name = "Item 1", Price = 10.0, Quantity = 1 };
-        private MockCartItem _item2 = new MockCartItem { Barcode = "222", Name = "Item 2", Price = 25.5, Quantity = 1 };
-        private MockCartItem _item1_duplicate = new MockCartItem { Barcode = "111", Name = "Item 1 Dup", Price = 10.0, Quantity = 2 }; // Same barcode, different quantity
+        private readonly MockCartItem _item1 = new() { Barcode = "111", Name = "Item 1", Price = 10.0, Quantity = 1 };
+        private readonly MockCartItem _item2 = new() { Barcode = "222", Name = "Item 2", Price = 25.5, Quantity = 1 };
+        private readonly MockCartItem _item1_duplicate = new() { Barcode = "111", Name = "Item 1 Dup", Price = 10.0, Quantity = 2 }; // Same barcode, different quantity
 
         [TestMethod]
         public void AddItem_NewItem_AddsToCart()

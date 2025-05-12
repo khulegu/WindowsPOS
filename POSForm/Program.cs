@@ -1,6 +1,5 @@
 using POSLib.Repositories;
 using POSLib.Controllers;
-using POSLib.Services;
 
 namespace POSForm
 {
@@ -19,10 +18,9 @@ namespace POSForm
             DatabaseInitializer.InitializeDatabase(connStr);
 
             UserRepository userRepo = new(connStr);
-            AuthService authService = new(userRepo);
             ProductRepository productRepo = new(connStr);
 
-            LoginForm loginForm = new(authService);
+            LoginForm loginForm = new(userRepo);
             Application.Run(loginForm);
 
             if (loginForm.DialogResult == DialogResult.OK && loginForm.User != null)

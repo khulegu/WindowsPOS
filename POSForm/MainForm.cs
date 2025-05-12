@@ -133,10 +133,6 @@ namespace POSForm
 
                 menuStrip.Items.Add(permissionGroupMenuItem);
             }
-
-            var helpMenuItem = new ToolStripMenuItem("Help");
-            helpMenuItem.Click += HelpMenuItem_Click;
-            menuStrip.Items.Add(helpMenuItem);
         }
 
         private void ViewProductsMenuItem_Click(object? sender, EventArgs e)
