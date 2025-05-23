@@ -210,6 +210,18 @@ namespace POSLibTest
         }
 
         [TestMethod]
+        public void UpdateProduct_WithNullImageUrl()
+        {
+            var product = _repository.GetAll()[0];
+            product.ImageUrl = null;
+            _repository.UpdateProduct(product);
+
+            var updatedProduct = _repository.GetByBarcode(product.Barcode);
+            Assert.IsNotNull(updatedProduct, "Product should be updated");
+            Assert.IsNull(updatedProduct.ImageUrl, "ImageUrl should be null");
+        }
+
+        [TestMethod]
         public void UpdateProduct_ThrowsExceptionIfBarcodeAlreadyExists()
         {
             var product = _repository.GetAll()[0];
