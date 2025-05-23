@@ -27,7 +27,7 @@ namespace POSLibTest
         public void GetPermissionDescription_ReturnsCorrectDescription()
         {
             Assert.AreEqual("_Бараа харах", Permission.ViewProducts.GetPermissionDescription());
-            Assert.AreEqual("_Бараа нэмэх", Permission.AddProducts.GetPermissionDescription());
+            Assert.AreEqual("Бараа нэмэх", Permission.AddProducts.GetPermissionDescription());
             Assert.AreEqual("Бараа засах", Permission.EditProducts.GetPermissionDescription());
             Assert.AreEqual("Бараа устгах", Permission.DeleteProducts.GetPermissionDescription());
 
