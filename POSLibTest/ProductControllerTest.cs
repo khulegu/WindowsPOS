@@ -30,6 +30,7 @@ namespace POSLibTest
                     Permission.AddProducts,
                     Permission.DeleteCategories,
                     Permission.DeleteProducts,
+                    Permission.EditProducts,
                 },
             };
             _controller = new ProductController(_testProductRepo, _testUser);
@@ -276,6 +277,63 @@ namespace POSLibTest
 
             // Act
             controller.DeleteCategory(category.Id);
+
+            // Assert is handled by ExpectedException attribute
+        }
+
+        [TestMethod]
+        public void EditProduct_WithValidPermission_ShouldEditProduct()
+        {
+            // Arrange
+            var product = new Product
+            {
+                Id = 1,
+                Name = "Test Product",
+                Barcode = "123",
+                Category = new ProductCategory { Id = 1, Name = "Test Category" },
+            };
+            _testProductRepo.AddProduct(product);
+
+            var updatedProduct = new Product
+            {
+                Id = 1,
+                Name = "Updated Product",
+                Barcode = "123",
+                Category = new ProductCategory { Id = 1, Name = "Test Category" },
+            };
+
+            // Act
+            _controller.EditProduct(updatedProduct);
+
+            // Assert
+            var updatedProductGot = _testProductRepo.GetByBarcode("123");
+            Assert.IsNotNull(updatedProductGot);
+            Assert.AreEqual("Updated Product", updatedProductGot.Name);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void EditProduct_WithoutPermission_ShouldThrowException()
+        {
+            // Arrange
+            var unauthorizedUser = new User
+            {
+                Username = "unauthorized",
+                Password = "testpass",
+                Role = Role.Cashier,
+                Permissions = new List<Permission>(),
+            };
+            var controller = new ProductController(_testProductRepo, unauthorizedUser);
+            var product = new Product
+            {
+                Id = 1,
+                Name = "Test Product",
+                Barcode = "123",
+                Category = new ProductCategory { Id = 1, Name = "Test Category" },
+            };
+
+            // Act
+            controller.EditProduct(product);
 
             // Assert is handled by ExpectedException attribute
         }

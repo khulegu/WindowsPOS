@@ -196,5 +196,26 @@ namespace POSLibTest
 
             Assert.IsNull(_repository.GetByBarcode(product.Barcode));
         }
+
+        [TestMethod]
+        public void UpdateProduct_UpdatesProduct()
+        {
+            var product = _repository.GetAll()[0];
+            product.Name = "Updated Product";
+            _repository.UpdateProduct(product);
+
+            var updatedProduct = _repository.GetByBarcode(product.Barcode);
+            Assert.IsNotNull(updatedProduct, "Product should be updated");
+            Assert.AreEqual("Updated Product", updatedProduct.Name);
+        }
+
+        [TestMethod]
+        public void UpdateProduct_ThrowsExceptionIfBarcodeAlreadyExists()
+        {
+            var product = _repository.GetAll()[0];
+            product.Barcode = "100003";
+            Assert.ThrowsException<DuplicateNameException>(() => _repository.UpdateProduct(product)
+            );
+        }
     }
 }

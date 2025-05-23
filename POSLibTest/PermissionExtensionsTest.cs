@@ -10,45 +10,36 @@ namespace POSLibTest
         [TestMethod]
         public void GetPermissionGroup_ReturnsCorrectGroup()
         {
-            Assert.AreEqual("Products", Permission.ViewProducts.GetPermissionGroup());
-            Assert.AreEqual("Products", Permission.AddProducts.GetPermissionGroup());
-            Assert.AreEqual("Products", Permission.EditProducts.GetPermissionGroup());
-            Assert.AreEqual("Products", Permission.DeleteProducts.GetPermissionGroup());
+            Assert.AreEqual("Бараа", Permission.ViewProducts.GetPermissionGroup());
+            Assert.AreEqual("Бараа", Permission.AddProducts.GetPermissionGroup());
+            Assert.AreEqual("Бараа", Permission.EditProducts.GetPermissionGroup());
+            Assert.AreEqual("Бараа", Permission.DeleteProducts.GetPermissionGroup());
 
-            Assert.AreEqual("Categories", Permission.ViewCategories.GetPermissionGroup());
-            Assert.AreEqual("Categories", Permission.AddCategories.GetPermissionGroup());
-            Assert.AreEqual("Categories", Permission.EditCategories.GetPermissionGroup());
-            Assert.AreEqual("Categories", Permission.DeleteCategories.GetPermissionGroup());
+            Assert.AreEqual("Ангилал", Permission.ViewCategories.GetPermissionGroup());
+            Assert.AreEqual("Ангилал", Permission.AddCategories.GetPermissionGroup());
+            Assert.AreEqual("Ангилал", Permission.EditCategories.GetPermissionGroup());
+            Assert.AreEqual("Ангилал", Permission.DeleteCategories.GetPermissionGroup());
 
-            Assert.AreEqual("Help", Permission.ViewHelp.GetPermissionGroup());
+            Assert.AreEqual("Тусламж", Permission.ViewHelp.GetPermissionGroup());
         }
 
         [TestMethod]
         public void GetPermissionDescription_ReturnsCorrectDescription()
         {
-            Assert.AreEqual("View Products", Permission.ViewProducts.GetPermissionDescription());
-            Assert.AreEqual("Add Products", Permission.AddProducts.GetPermissionDescription());
-            Assert.AreEqual("Edit Products", Permission.EditProducts.GetPermissionDescription());
-            Assert.AreEqual(
-                "Delete Products",
-                Permission.DeleteProducts.GetPermissionDescription()
-            );
+            Assert.AreEqual("_Бараа харах", Permission.ViewProducts.GetPermissionDescription());
+            Assert.AreEqual("_Бараа нэмэх", Permission.AddProducts.GetPermissionDescription());
+            Assert.AreEqual("Бараа засах", Permission.EditProducts.GetPermissionDescription());
+            Assert.AreEqual("Бараа устгах", Permission.DeleteProducts.GetPermissionDescription());
 
+            Assert.AreEqual("_Ангилал харах", Permission.ViewCategories.GetPermissionDescription());
+            Assert.AreEqual("_Ангилал нэмэх", Permission.AddCategories.GetPermissionDescription());
+            Assert.AreEqual("_Ангилал засах", Permission.EditCategories.GetPermissionDescription());
             Assert.AreEqual(
-                "View Categories",
-                Permission.ViewCategories.GetPermissionDescription()
-            );
-            Assert.AreEqual("Add Categories", Permission.AddCategories.GetPermissionDescription());
-            Assert.AreEqual(
-                "Edit Categories",
-                Permission.EditCategories.GetPermissionDescription()
-            );
-            Assert.AreEqual(
-                "Delete Categories",
+                "Ангилал устгах",
                 Permission.DeleteCategories.GetPermissionDescription()
             );
 
-            Assert.AreEqual("View Help", Permission.ViewHelp.GetPermissionDescription());
+            Assert.AreEqual("Тусламж", Permission.ViewHelp.GetPermissionDescription());
         }
 
         [TestMethod]
