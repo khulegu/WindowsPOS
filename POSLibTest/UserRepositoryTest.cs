@@ -11,7 +11,7 @@ namespace POSLibTest
     public class UserRepositoryTest
     {
         private readonly string _testConnectionString = "Data Source=pos-test.db";
-        private UserRepository _repository;
+        public required UserRepository _repository;
 
         [TestInitialize]
         public void Setup()

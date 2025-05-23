@@ -147,7 +147,6 @@ namespace POSForm
 
         private void ViewProductsMenuItem_Click(object? sender, EventArgs e)
         {
-            // TODO: Implement logic to show a product management/view form/dialog
             MessageBox.Show(
                 "Product View/Management clicked.",
                 "Information",
@@ -158,7 +157,6 @@ namespace POSForm
 
         private void ProductCategoriesMenuItem_Click(object? sender, EventArgs e)
         {
-            // TODO: Implement logic to show a product category management form/dialog
             MessageBox.Show(
                 "Product Categories clicked.",
                 "Information",
@@ -169,7 +167,6 @@ namespace POSForm
 
         private void HelpMenuItem_Click(object? sender, EventArgs e)
         {
-            // TODO: Implement logic to show help information
             MessageBox.Show(
                 "Help clicked.",
                 "Information",
@@ -208,6 +205,12 @@ namespace POSForm
 
         private void PayButton_Click(object sender, EventArgs e)
         {
+            if (cart.CartItems.Count == 0)
+            {
+                MessageBox.Show("Сагс хоосон байна.");
+                return;
+            }
+
             ReceiptPrinter printer = new();
             printer.PrintReceipt(cart.CartItems.ToList());
             cart.CartItems.Clear();
@@ -226,7 +229,7 @@ namespace POSForm
                 }
                 else
                 {
-                    //MessageBox.Show("Product not found");
+                    MessageBox.Show("Бүтээгдэхүүн олдсонгүй");
                 }
             }
         }

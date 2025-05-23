@@ -12,9 +12,9 @@ namespace POSLibTest
     [TestClass]
     public class ProductControllerTest
     {
-        private TestProductRepository _testProductRepo;
-        private User _testUser;
-        private ProductController _controller;
+        public required TestProductRepository _testProductRepo;
+        public required User _testUser;
+        public required ProductController _controller;
 
         [TestInitialize]
         public void Setup()

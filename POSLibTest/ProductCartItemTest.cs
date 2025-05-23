@@ -8,7 +8,7 @@ namespace POSLibTest
     [TestClass]
     public class ProductCartItemTests
     {
-        private Product _testProduct;
+        public required Product _testProduct;
 
         [TestInitialize]
         public void Setup()
@@ -28,7 +28,7 @@ namespace POSLibTest
             var cartItem = new ProductCartItem { Product = _testProduct };
             var changes = new List<string>();
 
-            cartItem.PropertyChanged += (s, e) => changes.Add(e.PropertyName);
+            cartItem.PropertyChanged += (s, e) => changes.Add(e.PropertyName!);
 
             cartItem.Quantity = 3;
 

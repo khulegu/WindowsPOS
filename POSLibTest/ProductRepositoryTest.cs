@@ -12,8 +12,8 @@ namespace POSLibTest
     public class ProductRepositoryTest
     {
         private readonly string _testDbPath = Path.GetTempFileName();
-        private ProductRepository _repository;
-        private SqliteConnection _connection;
+        public required ProductRepository _repository;
+        public required SqliteConnection _connection;
 
         [TestInitialize]
         public void Setup()

@@ -29,7 +29,7 @@ namespace POSForm
             }
             else
             {
-                MessageBox.Show("Login failed. Please check your username and password.");
+                MessageBox.Show("Нэвтрэх нэр нууц үг буруу байна.");
             }
         }
     }

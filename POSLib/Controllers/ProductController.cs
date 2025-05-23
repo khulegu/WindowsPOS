@@ -17,7 +17,7 @@ namespace POSLib.Controllers
         public BindingList<ProductCategory> Categories { get; } = [];
 
         /// <summary>
-        /// Initialize the products and categories
+        /// Бараа болон ангиллыг эхлүүлнэ.
         /// </summary>
         public void InitializeProducts()
         {
@@ -31,7 +31,7 @@ namespace POSLib.Controllers
         }
 
         /// <summary>
-        /// The selected category
+        /// Сонгогдсон ангилал.
         /// </summary>
         public ProductCategory? SelectedCategory
         {
@@ -52,16 +52,16 @@ namespace POSLib.Controllers
         }
 
         /// <summary>
-        /// Get a product by barcode
+        /// Баркодоор бараа авах.
         /// </summary>
-        /// <param name="barcode">The barcode of the product</param>
-        /// <returns>The product if found, otherwise null</returns>
+        /// <param name="barcode">Барааны баркод.</param>
+        /// <returns>Олдвол бараа, үгүй бол null.</returns>
         public Product? GetProductByBarcode(string barcode) => _productRepo.GetByBarcode(barcode);
 
         /// <summary>
-        /// Add a product
+        /// Бараа нэмэх.
         /// </summary>
-        /// <param name="product">The product to add</param>
+        /// <param name="product">Нэмэх бараа.</param>
         public void AddProduct(Product product)
         {
             if (_user.Permissions.Contains(Permission.AddProducts) == false)
@@ -70,9 +70,9 @@ namespace POSLib.Controllers
         }
 
         /// <summary>
-        /// Fill the products by category
+        /// Барааг ангилалын дагуу дүүргэх.
         /// </summary>
-        /// <param name="category">The category to fill the products by</param>
+        /// <param name="category">Барааг дүүргэх ангилал.</param>
         private void FillProductsByCategory(ProductCategory? category)
         {
             ProductsFiltered.Clear();
@@ -86,10 +86,6 @@ namespace POSLib.Controllers
             }
         }
 
-        /// <summary>
-        /// Notify the UI that a property has changed
-        /// </summary>
-        /// <param name="property">The property that has changed</param>
         protected virtual void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
