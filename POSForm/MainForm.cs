@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Data;
 using Microsoft.Data.Sqlite;
 using POSForm.Controls;
 using POSLib.Controllers;
@@ -15,6 +16,7 @@ namespace POSForm
         private readonly User _user;
         private readonly ProductController _productService;
         private readonly Cart cart = new();
+        private ProductControl? _selectedProductControl;
 
         public MainForm(User user)
         {
@@ -133,11 +135,19 @@ namespace POSForm
 
                 foreach (var permission in permissions)
                 {
-                    if (permission.GetPermissionGroup() == permissionGroup)
+                    if (
+                        permission.GetPermissionGroup() == permissionGroup
+                        && !permission.GetPermissionDescription().StartsWith("_")
+                    )
                     {
-                        permissionGroupMenuItem.DropDownItems.Add(
-                            new ToolStripMenuItem(permission.GetPermissionDescription())
+                        var permissionMenuItem = new ToolStripMenuItem(
+                            permission.GetPermissionDescription()
                         );
+                        permissionMenuItem.Click += (s, e) =>
+                        {
+                            OnPermissionMenuItemClick(permission);
+                        };
+                        permissionGroupMenuItem.DropDownItems.Add(permissionMenuItem);
                     }
                 }
 
@@ -145,34 +155,107 @@ namespace POSForm
             }
         }
 
-        private void ViewProductsMenuItem_Click(object? sender, EventArgs e)
+        private void OnPermissionMenuItemClick(Permission permission)
         {
-            MessageBox.Show(
-                "Product View/Management clicked.",
-                "Information",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information
-            );
-        }
+            if (permission == Permission.ViewProducts)
+            {
+                MessageBox.Show("View Products clicked.");
+            }
+            else if (permission == Permission.AddProducts)
+            {
+                MessageBox.Show("Add Products clicked.");
+            }
+            else if (permission == Permission.EditProducts)
+            {
+                if (_selectedProductControl == null)
+                {
+                    MessageBox.Show(
+                        "Please select a product to edit.",
+                        "Information",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                    return;
+                }
 
-        private void ProductCategoriesMenuItem_Click(object? sender, EventArgs e)
-        {
-            MessageBox.Show(
-                "Product Categories clicked.",
-                "Information",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information
-            );
-        }
+                try
+                {
+                    using var editForm = new EditProductForm(
+                        _selectedProductControl.Product!,
+                        _productService.Categories.ToList()
+                    );
+                    if (editForm.ShowDialog() == DialogResult.OK && editForm.EditedProduct != null)
+                    {
+                        _productService.EditProduct(editForm.EditedProduct);
+                    }
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
+                catch (DuplicateNameException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
+            }
+            else if (permission == Permission.DeleteProducts)
+            {
+                if (_selectedProductControl == null)
+                {
+                    MessageBox.Show(
+                        "Please select a product to delete.",
+                        "Information",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                    return;
+                }
 
-        private void HelpMenuItem_Click(object? sender, EventArgs e)
-        {
-            MessageBox.Show(
-                "Help clicked.",
-                "Information",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information
-            );
+                try
+                {
+                    _productService.DeleteProduct(_selectedProductControl.Product!.Id);
+                    _selectedProductControl = null;
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
+            }
+            else if (permission == Permission.ViewCategories)
+            {
+                MessageBox.Show("View Categories clicked.");
+            }
+            else if (permission == Permission.AddCategories)
+            {
+                MessageBox.Show("Add Categories clicked.");
+            }
+            else if (permission == Permission.EditCategories)
+            {
+                MessageBox.Show("Edit Categories clicked.");
+            }
+            else if (permission == Permission.DeleteCategories)
+            {
+                _productService.DeleteCategory(_productService.SelectedCategory!.Id);
+            }
+            else if (permission == Permission.ViewHelp)
+            {
+                MessageBox.Show("View Help clicked.");
+            }
         }
 
         private void UpdateDateLabel()
@@ -186,7 +269,12 @@ namespace POSForm
             productControl.InitializeProduct(product);
             productControl.ProductClicked += (sender, p) =>
             {
-                cart.AddItem(new ProductCartItem { Product = product, Quantity = 1 });
+                if (_selectedProductControl != null)
+                {
+                    _selectedProductControl.IsSelected = false;
+                }
+                _selectedProductControl = productControl;
+                _selectedProductControl.IsSelected = true;
             };
             return productControl;
         }

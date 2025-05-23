@@ -173,5 +173,28 @@ namespace POSLibTest
             Assert.IsNotNull(addedCategory, "Category should be added");
             Assert.IsTrue(addedCategory.Id > 0, "Category should have an assigned ID");
         }
+
+        [TestMethod]
+        public void DeleteCategory_DeletesCategoryAndProducts()
+        {
+            var category = _repository.GetAllCategories()[0];
+            _repository.DeleteCategory(category.Id);
+
+            var products = _repository.GetAllByCategory(category.Id);
+            Assert.AreEqual(0, products.Count, "Should return empty list for deleted category");
+
+            var categories = _repository.GetAllCategories();
+            var deletedCategory = categories.Find(c => c.Id == category.Id);
+            Assert.IsNull(deletedCategory, "Category should be deleted");
+        }
+
+        [TestMethod]
+        public void DeleteProduct_DeletesProduct()
+        {
+            var product = _repository.GetAll()[0];
+            _repository.DeleteProduct(product.Id);
+
+            Assert.IsNull(_repository.GetByBarcode(product.Barcode));
+        }
     }
 }

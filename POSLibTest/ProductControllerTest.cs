@@ -25,7 +25,12 @@ namespace POSLibTest
                 Username = "testuser",
                 Password = "testpass",
                 Role = Role.Manager,
-                Permissions = new List<Permission> { Permission.AddProducts },
+                Permissions = new List<Permission>
+                {
+                    Permission.AddProducts,
+                    Permission.DeleteCategories,
+                    Permission.DeleteProducts,
+                },
             };
             _controller = new ProductController(_testProductRepo, _testUser);
         }
@@ -61,7 +66,7 @@ namespace POSLibTest
 
             // Assert
             Assert.AreEqual(2, _controller.Categories.Count);
-            Assert.AreEqual(0, _controller.ProductsFiltered.Count); // Should be empty as no category is selected
+            Assert.AreEqual(2, _controller.ProductsFiltered.Count);
         }
 
         [TestMethod]
@@ -139,6 +144,23 @@ namespace POSLibTest
         }
 
         [TestMethod]
+        public void DeleteCategory_WithValidPermission_ShouldDeleteCategory()
+        {
+            // Arrange
+            var category = new ProductCategory { Id = 1, Name = "Test Category" };
+            _testProductRepo.AddCategory(category);
+
+            // Act
+            _controller.DeleteCategory(category.Id);
+
+            // Assert
+            var deletedCategory = _testProductRepo
+                .GetAllCategories()
+                .FirstOrDefault(c => c.Id == category.Id);
+            Assert.IsNull(deletedCategory);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(UnauthorizedAccessException))]
         public void AddProduct_WithoutPermission_ShouldThrowException()
         {
@@ -185,6 +207,78 @@ namespace POSLibTest
             // Assert
             Assert.IsTrue(propertyChangedRaised);
         }
+
+        [TestMethod]
+        public void DeleteProduct_WithValidPermission_ShouldDeleteProduct()
+        {
+            // Arrange
+            var product = new Product
+            {
+                Id = 1,
+                Name = "Test Product",
+                Barcode = "123",
+                Category = new ProductCategory { Id = 1, Name = "Test Category" },
+            };
+            _testProductRepo.AddProduct(product);
+
+            // Act
+            _controller.DeleteProduct(product.Id);
+
+            // Assert
+            var deletedProduct = _testProductRepo.GetByBarcode("123");
+            Assert.IsNull(deletedProduct);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void DeleteProduct_WithoutPermission_ShouldThrowException()
+        {
+            // Arrange
+            var unauthorizedUser = new User
+            {
+                Username = "unauthorized",
+                Password = "testpass",
+                Role = Role.Cashier,
+                Permissions = new List<Permission>(),
+            };
+
+            var controller = new ProductController(_testProductRepo, unauthorizedUser);
+            var product = new Product
+            {
+                Id = 1,
+                Name = "Test Product",
+                Barcode = "123",
+                Category = new ProductCategory { Id = 1, Name = "Test Category" },
+            };
+
+            // Act
+            controller.DeleteProduct(product.Id);
+
+            // Assert is handled by ExpectedException attribute
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void DeleteCategory_WithoutPermission_ShouldThrowException()
+        {
+            // Arrange
+            var unauthorizedUser = new User
+            {
+                Username = "unauthorized",
+                Password = "testpass",
+                Role = Role.Cashier,
+                Permissions = new List<Permission>(),
+            };
+
+            var controller = new ProductController(_testProductRepo, unauthorizedUser);
+            var category = new ProductCategory { Id = 1, Name = "Test Category" };
+            _testProductRepo.AddCategory(category);
+
+            // Act
+            controller.DeleteCategory(category.Id);
+
+            // Assert is handled by ExpectedException attribute
+        }
     }
 
     // Test implementation of IProductRepository
@@ -226,6 +320,25 @@ namespace POSLibTest
         public Product? GetByBarcode(string barcode)
         {
             return _products.FirstOrDefault(p => p.Barcode == barcode);
+        }
+
+        public void DeleteCategory(int categoryId)
+        {
+            _categories.RemoveAll(c => c.Id == categoryId);
+        }
+
+        public void DeleteProduct(int productId)
+        {
+            _products.RemoveAll(p => p.Id == productId);
+        }
+
+        public void UpdateProduct(Product product)
+        {
+            var index = _products.FindIndex(p => p.Id == product.Id);
+            if (index != -1)
+            {
+                _products[index] = product;
+            }
         }
     }
 }

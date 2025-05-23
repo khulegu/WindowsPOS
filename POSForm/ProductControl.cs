@@ -1,17 +1,38 @@
 ﻿using System.Diagnostics;
+using System.Drawing;
+using System.Windows.Forms;
 using POSLib.Models;
 
 namespace POSForm
 {
     public partial class ProductControl : UserControl
     {
+        private bool _isSelected = false;
+        public event EventHandler<Product>? ProductClicked;
+        private Product? _product;
+
+        public Product? Product => _product;
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                _isSelected = value;
+                if (_isSelected)
+                {
+                    this.BackColor = Color.LightBlue;
+                }
+                else
+                {
+                    this.BackColor = SystemColors.Control;
+                }
+            }
+        }
+
         public ProductControl()
         {
             InitializeComponent();
         }
-
-        public event EventHandler<Product>? ProductClicked;
-        private Product? _product;
 
         public void InitializeProduct(Product product)
         {

@@ -24,10 +24,12 @@ namespace POSForm.Controls
                 }
             }
         }
+
         public ProductCategoryControl()
         {
             InitializeComponent();
         }
+
         public void InitializeCategory(ProductCategory category)
         {
             this.BackColor = SystemColors.Control;
@@ -41,6 +43,7 @@ namespace POSForm.Controls
         }
 
         public event EventHandler<ProductCategory>? ProductCategoryClicked;
+
         private void ProductCategoryPanel_Click(object? sender, EventArgs e)
         {
             ProductCategoryClicked?.Invoke(this, _category!);

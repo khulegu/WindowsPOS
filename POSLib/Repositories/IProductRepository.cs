@@ -37,8 +37,26 @@ namespace POSLib.Repositories
         void AddCategory(ProductCategory category);
 
         /// <summary>
+        /// Delete a category
+        /// </summary>
+        /// <param name="categoryId">The id of the category to delete</param>
+        void DeleteCategory(int categoryId);
+
+        /// <summary>
         /// Add a product
         /// </summary>
         void Add(Product product);
+
+        /// <summary>
+        /// Delete a product
+        /// </summary>
+        /// <param name="productId">The id of the product to delete</param>
+        void DeleteProduct(int productId);
+
+        /// <summary>
+        /// Update a product
+        /// </summary>
+        /// <param name="product">The product to update</param>
+        void UpdateProduct(Product product);
     }
 }

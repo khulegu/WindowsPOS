@@ -192,5 +192,86 @@ namespace POSLib.Repositories
             }
             return categories;
         }
+
+        /// <summary>
+        /// Delete a category and all products in it
+        /// </summary>
+        /// <param name="categoryId">The id of the category to delete</param>
+        public void DeleteCategory(int categoryId)
+        {
+            using var connection = new SqliteConnection(_connStr);
+            connection.Open();
+
+            {
+                using var command = connection.CreateCommand();
+                command.CommandText = "DELETE FROM Products WHERE categoryId = $categoryId";
+                command.Parameters.AddWithValue("$categoryId", categoryId);
+
+                command.ExecuteNonQuery();
+            }
+            {
+                using var command = connection.CreateCommand();
+                command.CommandText = "DELETE FROM ProductCategories WHERE id = $categoryId";
+                command.Parameters.AddWithValue("$categoryId", categoryId);
+
+                command.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Delete a product
+        /// </summary>
+        /// <param name="productId">The id of the product to delete</param>
+        public void DeleteProduct(int productId)
+        {
+            using var connection = new SqliteConnection(_connStr);
+            connection.Open();
+
+            using var command = connection.CreateCommand();
+            command.CommandText = "DELETE FROM Products WHERE id = $productId";
+            command.Parameters.AddWithValue("$productId", productId);
+
+            command.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Update a product
+        /// </summary>
+        /// <param name="product">The product to update</param>
+        public void UpdateProduct(Product product)
+        {
+            using var connection = new SqliteConnection(_connStr);
+            connection.Open();
+
+            using var command = connection.CreateCommand();
+            command.CommandText =
+                @"
+                UPDATE Products 
+                SET name = $name, 
+                    price = $price, 
+                    barcode = $barcode, 
+                    categoryId = $categoryId, 
+                    imageUrl = $imageUrl 
+                WHERE id = $id";
+
+            command.Parameters.AddWithValue("$name", product.Name);
+            command.Parameters.AddWithValue("$price", product.Price);
+            command.Parameters.AddWithValue("$barcode", product.Barcode);
+            command.Parameters.AddWithValue("$categoryId", product.Category.Id);
+            command.Parameters.AddWithValue("$imageUrl", product.ImageUrl ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("$id", product.Id);
+
+            try
+            {
+                command.ExecuteNonQuery();
+            }
+            catch (SqliteException ex) when (ex.SqliteErrorCode == 19) // SQLITE_CONSTRAINT
+            {
+                throw new DuplicateNameException(
+                    $"A product with the barcode '{product.Barcode}' already exists.",
+                    ex
+                );
+            }
+        }
     }
 }

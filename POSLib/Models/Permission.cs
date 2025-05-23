@@ -41,15 +41,15 @@ namespace POSLib.Models
         {
             return permission switch
             {
-                Permission.ViewProducts => "Products",
-                Permission.AddProducts => "Products",
-                Permission.EditProducts => "Products",
-                Permission.DeleteProducts => "Products",
-                Permission.EditCategories => "Categories",
-                Permission.ViewCategories => "Categories",
-                Permission.AddCategories => "Categories",
-                Permission.DeleteCategories => "Categories",
-                Permission.ViewHelp => "Help",
+                Permission.ViewProducts => "Бараа",
+                Permission.AddProducts => "Бараа",
+                Permission.EditProducts => "Бараа",
+                Permission.DeleteProducts => "Бараа",
+                Permission.EditCategories => "Ангилал",
+                Permission.ViewCategories => "Ангилал",
+                Permission.AddCategories => "Ангилал",
+                Permission.DeleteCategories => "Ангилал",
+                Permission.ViewHelp => "Тусламж",
                 _ => throw new ArgumentOutOfRangeException(nameof(permission), permission, null),
             };
         }
@@ -58,15 +58,15 @@ namespace POSLib.Models
         {
             return permission switch
             {
-                Permission.ViewProducts => "View Products",
-                Permission.AddProducts => "Add Products",
-                Permission.EditProducts => "Edit Products",
-                Permission.DeleteProducts => "Delete Products",
-                Permission.EditCategories => "Edit Categories",
-                Permission.ViewCategories => "View Categories",
-                Permission.AddCategories => "Add Categories",
-                Permission.DeleteCategories => "Delete Categories",
-                Permission.ViewHelp => "View Help",
+                Permission.ViewProducts => "_Бараа харах",
+                Permission.AddProducts => "_Бараа нэмэх",
+                Permission.EditProducts => "Бараа засах",
+                Permission.DeleteProducts => "Бараа устгах",
+                Permission.EditCategories => "_Ангилал засах",
+                Permission.ViewCategories => "_Ангилал харах",
+                Permission.AddCategories => "_Ангилал нэмэх",
+                Permission.DeleteCategories => "Ангилал устгах",
+                Permission.ViewHelp => "Тусламж",
                 _ => throw new ArgumentOutOfRangeException(nameof(permission), permission, null),
             };
         }

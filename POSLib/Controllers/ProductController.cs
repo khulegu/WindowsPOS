@@ -27,6 +27,7 @@ namespace POSLib.Controllers
             {
                 Categories.Add(category);
             }
+            _selectedCategory = Categories.FirstOrDefault();
             FillProductsByCategory(_selectedCategory);
         }
 
@@ -67,6 +68,42 @@ namespace POSLib.Controllers
             if (_user.Permissions.Contains(Permission.AddProducts) == false)
                 throw new UnauthorizedAccessException("Танд бараа нэмэх эрх байхгүй.");
             _productRepo.Add(product);
+        }
+
+        /// <summary>
+        /// Delete a product
+        /// </summary>
+        /// <param name="productId">The id of the product to delete</param>
+        public void DeleteProduct(int productId)
+        {
+            if (_user.Permissions.Contains(Permission.DeleteProducts) == false)
+                throw new UnauthorizedAccessException("Танд бараа устгах эрх байхгүй.");
+            _productRepo.DeleteProduct(productId);
+            FillProductsByCategory(_selectedCategory);
+        }
+
+        /// <summary>
+        /// Edit a product
+        /// </summary>
+        /// <param name="product">The product to edit</param>
+        public void EditProduct(Product product)
+        {
+            if (_user.Permissions.Contains(Permission.EditProducts) == false)
+                throw new UnauthorizedAccessException("Танд бараа засах эрх байхгүй.");
+            _productRepo.UpdateProduct(product);
+            FillProductsByCategory(_selectedCategory);
+        }
+
+        /// <summary>
+        /// Delete a category
+        /// </summary>
+        /// <param name="categoryId">The id of the category to delete</param>
+        public void DeleteCategory(int categoryId)
+        {
+            if (_user.Permissions.Contains(Permission.DeleteCategories) == false)
+                throw new UnauthorizedAccessException("Танд ангилал устгах эрх байхгүй.");
+            _productRepo.DeleteCategory(categoryId);
+            InitializeProducts(); // Refresh the categories list
         }
 
         /// <summary>
