@@ -5,31 +5,42 @@ namespace POSLib.Repositories
 {
     public static class DatabaseInitializer
     {
-
-        private static void CreateUserIfDoesntExist(SqliteConnection connection, string username, string password, string role)
+        private static void CreateUserIfDoesntExist(
+            SqliteConnection connection,
+            string username,
+            string password,
+            string role
+        )
         {
             string checkUserSql = "SELECT COUNT(*) FROM Users WHERE username = @username";
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = checkUserSql;
-                command.Parameters.AddWithValue("@username", username);
-                long userExists = (long?)command.ExecuteScalar() ?? 0;
+            using var command = connection.CreateCommand();
+            command.CommandText = checkUserSql;
+            command.Parameters.AddWithValue("@username", username);
+            long userExists = (long?)command.ExecuteScalar() ?? 0;
 
-                if (userExists == 0)
-                {
-                    string insertUserSql = "INSERT INTO Users (username, password, role) VALUES (@username, @password, @role)";
-                    command.CommandText = insertUserSql;
-                    command.Parameters.AddWithValue("@password", password);
-                    command.Parameters.AddWithValue("@role", role);
-                    command.ExecuteNonQuery();
-                }
+            if (userExists == 0)
+            {
+                string insertUserSql =
+                    "INSERT INTO Users (username, password, role) VALUES (@username, @password, @role)";
+                command.CommandText = insertUserSql;
+                command.Parameters.AddWithValue("@password", password);
+                command.Parameters.AddWithValue("@role", role);
+                command.ExecuteNonQuery();
             }
         }
 
-        private static void CreateProductIfDoesntExist(SqliteConnection connection, string name, double price, string barcode, string category, string? imageUrl = null)
+        private static void CreateProductIfDoesntExist(
+            SqliteConnection connection,
+            string name,
+            double price,
+            string barcode,
+            string category,
+            string? imageUrl = null
+        )
         {
             // Check for the category
-            string checkCategorySql = "SELECT COUNT(*) FROM ProductCategories WHERE name = @category";
+            string checkCategorySql =
+                "SELECT COUNT(*) FROM ProductCategories WHERE name = @category";
             using (var command = connection.CreateCommand())
             {
                 command.CommandText = checkCategorySql;
@@ -38,7 +49,8 @@ namespace POSLib.Repositories
 
                 if (categoryExists == 0)
                 {
-                    string insertCategorySql = "INSERT INTO ProductCategories (name) VALUES (@category)";
+                    string insertCategorySql =
+                        "INSERT INTO ProductCategories (name) VALUES (@category)";
                     command.CommandText = insertCategorySql;
                     command.ExecuteNonQuery();
                     Console.WriteLine($"Category '{category}' checked/created.");
@@ -64,12 +76,16 @@ namespace POSLib.Repositories
 
                 if (productExists == 0)
                 {
-                    string insertProductSql = "INSERT INTO Products (name, price, barcode, categoryId, imageUrl) VALUES (@name, @price, @barcode, @categoryId, @imageUrl)";
+                    string insertProductSql =
+                        "INSERT INTO Products (name, price, barcode, categoryId, imageUrl) VALUES (@name, @price, @barcode, @categoryId, @imageUrl)";
                     command.CommandText = insertProductSql;
                     command.Parameters.AddWithValue("@name", name);
                     command.Parameters.AddWithValue("@price", price);
                     command.Parameters.AddWithValue("@categoryId", categoryId);
-                    command.Parameters.AddWithValue("@imageUrl", imageUrl == null ? DBNull.Value : imageUrl);
+                    command.Parameters.AddWithValue(
+                        "@imageUrl",
+                        imageUrl == null ? DBNull.Value : imageUrl
+                    );
                     command.ExecuteNonQuery();
                 }
             }
@@ -106,9 +122,8 @@ namespace POSLib.Repositories
                     Debug.WriteLine("ProductCategories table dropped.");
                 }
 
-
-
-                string createUserTableSql = @"
+                string createUserTableSql =
+                    @"
             CREATE TABLE IF NOT EXISTS Users (
                 id       INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT NOT NULL UNIQUE,
@@ -123,7 +138,8 @@ namespace POSLib.Repositories
                     Console.WriteLine("Users table checked/created.");
                 }
 
-                string createProductCategoryTableSql = @"
+                string createProductCategoryTableSql =
+                    @"
             CREATE TABLE IF NOT EXISTS ProductCategories (
                 id      INTEGER PRIMARY KEY AUTOINCREMENT,
                 name    TEXT NOT NULL UNIQUE
@@ -135,7 +151,8 @@ namespace POSLib.Repositories
                     Console.WriteLine("ProductCategories table checked/created.");
                 }
 
-                string createProductTableSql = @"
+                string createProductTableSql =
+                    @"
             CREATE TABLE IF NOT EXISTS Products (
                 id      INTEGER PRIMARY KEY AUTOINCREMENT,
                 name    TEXT NOT NULL,
@@ -153,31 +170,170 @@ namespace POSLib.Repositories
                     Console.WriteLine("Products table checked/created.");
                 }
 
-
                 CreateUserIfDoesntExist(connection, "manager", "1234", "Manager");
                 CreateUserIfDoesntExist(connection, "cashier1", "1234", "Cashier");
                 CreateUserIfDoesntExist(connection, "cashier2", "1234", "Cashier");
 
-                CreateProductIfDoesntExist(connection, "Apples (Gala)", 2.50, "100001", "Produce", "https://media.istockphoto.com/id/184276818/photo/red-apple.jpg?s=612x612&w=0&k=20&c=NvO-bLsG0DJ_7Ii8SSVoKLurzjmV0Qi4eGfn6nW3l5w=");
-                CreateProductIfDoesntExist(connection, "Milk (Whole)", 4.00, "100003", "Dairy & Cheese", "https://atlas-content-cdn.pixelsquid.com/stock-images/milk-glass-Ka6B5N0-600.jpg");
-                CreateProductIfDoesntExist(connection, "Bagels (Plain)", 5.50, "100004", "Bakery", "https://loremflickr.com/320/320/bagels");
-                CreateProductIfDoesntExist(connection, "Orange Juice", 3.75, "100005", "Beverages", "https://loremflickr.com/320/320/orange-juice");
-                CreateProductIfDoesntExist(connection, "Peanut Butter", 6.00, "100006", "Pantry", "https://loremflickr.com/320/320/peanut-butter");
-                CreateProductIfDoesntExist(connection, "Chicken Breast (Pack)", 12.99, "100007", "Meat & Seafood", "https://loremflickr.com/320/320/chicken");
-                CreateProductIfDoesntExist(connection, "Pasta (Spaghetti)", 2.25, "100008", "Pantry", "https://loremflickr.com/320/320/pasta");
-                CreateProductIfDoesntExist(connection, "Yogurt (Strawberry)", 1.25, "100009", "Dairy & Cheese", "https://loremflickr.com/320/320/yogurt");
-                CreateProductIfDoesntExist(connection, "Coffee Beans (Arabica)", 15.00, "100010", "Beverages", "https://loremflickr.com/320/320/coffee");
-                CreateProductIfDoesntExist(connection, "Crackers (Saltine)", 3.00, "100011", "Snacks", "https://loremflickr.com/320/320/crackers");
-                CreateProductIfDoesntExist(connection, "Bananas", 1.99, "100012", "Produce", "https://loremflickr.com/320/320/bananas");
-                CreateProductIfDoesntExist(connection, "Eggs (Dozen)", 5.25, "100013", "Dairy & Cheese", "https://loremflickr.com/320/240");
-                CreateProductIfDoesntExist(connection, "Croissants", 4.75, "100014", "Bakery", "https://loremflickr.com/320/240");
-                CreateProductIfDoesntExist(connection, "Iced Tea (Peach)", 2.00, "100015", "Beverages", "https://loremflickr.com/320/240");
-                CreateProductIfDoesntExist(connection, "Almonds (Bag)", 7.50, "100016", "Snacks", "https://loremflickr.com/320/240");
-                CreateProductIfDoesntExist(connection, "Ground Beef", 9.50, "100017", "Meat & Seafood", "https://loremflickr.com/320/240");
-                CreateProductIfDoesntExist(connection, "Rice (Basmati)", 4.25, "100018", "Pantry", "https://loremflickr.com/320/240");
-                CreateProductIfDoesntExist(connection, "Butter (Stick)", 2.75, "100019", "Dairy & Cheese", "https://loremflickr.com/320/240");
-                CreateProductIfDoesntExist(connection, "Green Tea Bags", 6.75, "100020", "Beverages", "https://loremflickr.com/320/240");
-                CreateProductIfDoesntExist(connection, "Pretzels", 3.50, "100021", "Snacks", "https://loremflickr.com/320/240");
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Apples (Gala)",
+                    2.50,
+                    "100001",
+                    "Produce",
+                    "https://media.istockphoto.com/id/184276818/photo/red-apple.jpg?s=612x612&w=0&k=20&c=NvO-bLsG0DJ_7Ii8SSVoKLurzjmV0Qi4eGfn6nW3l5w="
+                );
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Milk (Whole)",
+                    4.00,
+                    "100003",
+                    "Dairy & Cheese",
+                    "https://atlas-content-cdn.pixelsquid.com/stock-images/milk-glass-Ka6B5N0-600.jpg"
+                );
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Bagels (Plain)",
+                    5.50,
+                    "100004",
+                    "Bakery",
+                    "https://loremflickr.com/320/320/bagels"
+                );
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Orange Juice",
+                    3.75,
+                    "100005",
+                    "Beverages",
+                    "https://loremflickr.com/320/320/orange-juice"
+                );
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Peanut Butter",
+                    6.00,
+                    "100006",
+                    "Pantry",
+                    "https://loremflickr.com/320/320/peanut-butter"
+                );
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Chicken Breast (Pack)",
+                    12.99,
+                    "100007",
+                    "Meat & Seafood",
+                    "https://loremflickr.com/320/320/chicken"
+                );
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Pasta (Spaghetti)",
+                    2.25,
+                    "100008",
+                    "Pantry",
+                    "https://loremflickr.com/320/320/pasta"
+                );
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Yogurt (Strawberry)",
+                    1.25,
+                    "100009",
+                    "Dairy & Cheese",
+                    "https://loremflickr.com/320/320/yogurt"
+                );
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Coffee Beans (Arabica)",
+                    15.00,
+                    "100010",
+                    "Beverages",
+                    "https://loremflickr.com/320/320/coffee"
+                );
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Crackers (Saltine)",
+                    3.00,
+                    "100011",
+                    "Snacks",
+                    "https://loremflickr.com/320/320/crackers"
+                );
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Bananas",
+                    1.99,
+                    "100012",
+                    "Produce",
+                    "https://loremflickr.com/320/320/bananas"
+                );
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Eggs (Dozen)",
+                    5.25,
+                    "100013",
+                    "Dairy & Cheese",
+                    "https://loremflickr.com/320/240"
+                );
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Croissants",
+                    4.75,
+                    "100014",
+                    "Bakery",
+                    "https://loremflickr.com/320/240"
+                );
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Iced Tea (Peach)",
+                    2.00,
+                    "100015",
+                    "Beverages",
+                    "https://loremflickr.com/320/240"
+                );
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Almonds (Bag)",
+                    7.50,
+                    "100016",
+                    "Snacks",
+                    "https://loremflickr.com/320/240"
+                );
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Ground Beef",
+                    9.50,
+                    "100017",
+                    "Meat & Seafood",
+                    "https://loremflickr.com/320/240"
+                );
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Rice (Basmati)",
+                    4.25,
+                    "100018",
+                    "Pantry",
+                    "https://loremflickr.com/320/240"
+                );
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Butter (Stick)",
+                    2.75,
+                    "100019",
+                    "Dairy & Cheese",
+                    "https://loremflickr.com/320/240"
+                );
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Green Tea Bags",
+                    6.75,
+                    "100020",
+                    "Beverages",
+                    "https://loremflickr.com/320/240"
+                );
+                CreateProductIfDoesntExist(
+                    connection,
+                    "Pretzels",
+                    3.50,
+                    "100021",
+                    "Snacks",
+                    "https://loremflickr.com/320/240"
+                );
             }
             catch (SqliteException ex)
             {

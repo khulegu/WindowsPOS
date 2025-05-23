@@ -1,13 +1,12 @@
-using POSLib.Repositories;
+using Microsoft.Data.Sqlite;
 using POSLib.Controllers;
+using POSLib.Repositories;
 
 namespace POSForm
 {
     internal static class Program
     {
         static readonly string connStr = "Data Source=pos.db";
-
-
 
         [STAThread]
         static void Main()

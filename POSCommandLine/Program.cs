@@ -1,8 +1,8 @@
-﻿using POSLib.Exceptions;
+﻿using System.Data;
+using Microsoft.Data.Sqlite;
+using POSLib.Controllers;
 using POSLib.Models;
 using POSLib.Repositories;
-using POSLib.Controllers;
-using POSLib.Services;
 
 internal class Program
 {
@@ -12,14 +12,11 @@ internal class Program
 
         DatabaseInitializer.InitializeDatabase(connStr);
 
-
         var userRepo = new UserRepository(connStr);
         var productRepo = new ProductRepository(connStr);
-
-        var authService = new AuthService(userRepo);
         var cart = new Cart();
 
-        var user = authService.Login("manager", "1234");
+        var user = userRepo.Login("manager", "1234");
 
         if (user == null)
         {
@@ -34,20 +31,20 @@ internal class Program
         try
         {
             productService.AddProduct(
-              new Product
-              {
-                  Name = "Jam",
-                  Price = 5.0,
-                  Barcode = "555",
-                  Category = new ProductCategory { Id = 1, Name = "Food" },
-              }
+                new Product
+                {
+                    Name = "Jam",
+                    Price = 5.0,
+                    Barcode = "555",
+                    Category = new ProductCategory { Id = 1, Name = "Food" },
+                }
             );
         }
-        catch (ForbiddenException ex)
+        catch (UnauthorizedAccessException ex)
         {
             Console.WriteLine(ex.Message);
         }
-        catch (BarcodeAlreadyExistsException ex)
+        catch (DuplicateNameException ex)
         {
             Console.WriteLine(ex.Message);
         }
@@ -61,11 +58,7 @@ internal class Program
         }
         else
         {
-            cart.AddItem(new ProductCartItem
-            {
-                Product = prod,
-                Quantity = 1
-            });
+            cart.AddItem(new ProductCartItem { Product = prod, Quantity = 1 });
         }
 
         var total = cart.Total;

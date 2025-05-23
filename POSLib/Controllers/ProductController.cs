@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
-using POSLib.Exceptions;
 using POSLib.Models;
 using POSLib.Repositories;
 
 namespace POSLib.Controllers
 {
-    public class ProductController(IProductRepository productRepo, User user) : INotifyPropertyChanged
+    public class ProductController(IProductRepository productRepo, User user)
+        : INotifyPropertyChanged
     {
         private readonly IProductRepository _productRepo = productRepo;
         private readonly User _user = user;
@@ -65,30 +65,8 @@ namespace POSLib.Controllers
         public void AddProduct(Product product)
         {
             if (_user.Permissions.Contains(Permission.AddProducts) == false)
-                throw new ForbiddenException("Танд бараа нэмэх эрх байхгүй.");
+                throw new UnauthorizedAccessException("Танд бараа нэмэх эрх байхгүй.");
             _productRepo.Add(product);
-        }
-
-        /// <summary>
-        /// Update a product
-        /// </summary>
-        /// <param name="product">The product to update</param>
-        public void UpdateProduct(Product product)
-        {
-            if (_user.Permissions.Contains(Permission.EditProducts) == false)
-                throw new ForbiddenException("Танд бараа засах эрх байхгүй.");
-            _productRepo.Update(product);
-        }
-
-        /// <summary>
-        /// Delete a product
-        /// </summary>
-        /// <param name="id">The id of the product to delete</param>
-        public void DeleteProduct(int id)
-        {
-            if (_user.Role != Role.Manager)
-                throw new ForbiddenException("Танд бараа устгах эрх байхгүй.");
-            _productRepo.Delete(id);
         }
 
         /// <summary>

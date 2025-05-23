@@ -4,11 +4,9 @@ namespace POSLib.Models
 {
     public class Cart : INotifyPropertyChanged
     {
-
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public BindingList<ICartItem> CartItems { get; } = [];
-
 
         /// <summary>
         /// Бараа сагсанд нэмэх. Хэрвээ бараа сагсанд байгаа бол тоог нэмнэ.
@@ -16,7 +14,9 @@ namespace POSLib.Models
         /// <param name="cartItem">Барааны обьект</param>
         public void AddItem(ICartItem cartItem)
         {
-            ICartItem? matchingCartItem = CartItems.FirstOrDefault(x => x.Barcode == cartItem.Barcode);
+            ICartItem? matchingCartItem = CartItems.FirstOrDefault(x =>
+                x.Barcode == cartItem.Barcode
+            );
 
             if (matchingCartItem != null)
             {

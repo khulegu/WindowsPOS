@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel;
+using Microsoft.Data.Sqlite;
 using POSForm.Controls;
+using POSLib.Controllers;
 using POSLib.Models;
 using POSLib.Repositories;
-using POSLib.Controllers;
 
 namespace POSForm
 {
@@ -30,7 +31,9 @@ namespace POSForm
                 switch (e.ListChangedType)
                 {
                     case ListChangedType.ItemAdded:
-                        productsLayout.Controls.Add(CreateProductControl(_productService.ProductsFiltered[e.NewIndex]));
+                        productsLayout.Controls.Add(
+                            CreateProductControl(_productService.ProductsFiltered[e.NewIndex])
+                        );
                         break;
                     case ListChangedType.ItemDeleted:
                         productsLayout.Controls.RemoveAt(e.NewIndex);
@@ -53,7 +56,9 @@ namespace POSForm
                 switch (e.ListChangedType)
                 {
                     case ListChangedType.ItemAdded:
-                        categoriesLayout.Controls.Add(CreateCategoryControl(_productService.Categories[e.NewIndex]));
+                        categoriesLayout.Controls.Add(
+                            CreateCategoryControl(_productService.Categories[e.NewIndex])
+                        );
                         break;
                     case ListChangedType.ItemDeleted:
                         categoriesLayout.Controls.RemoveAt(e.NewIndex);
@@ -77,7 +82,8 @@ namespace POSForm
                 {
                     foreach (ProductCategoryControl categoryControl in categoriesLayout.Controls)
                     {
-                        categoryControl.IsSelected = categoryControl.Category?.Id == _productService.SelectedCategory?.Id;
+                        categoryControl.IsSelected =
+                            categoryControl.Category?.Id == _productService.SelectedCategory?.Id;
                     }
                 }
             };
@@ -115,9 +121,11 @@ namespace POSForm
         {
             menuStrip.Items.Clear();
 
-
             var permissions = _user.Permissions;
-            var permissionGroups = permissions.Select(p => p.GetPermissionGroup()).Distinct().ToList();
+            var permissionGroups = permissions
+                .Select(p => p.GetPermissionGroup())
+                .Distinct()
+                .ToList();
 
             foreach (var permissionGroup in permissionGroups)
             {
@@ -127,7 +135,9 @@ namespace POSForm
                 {
                     if (permission.GetPermissionGroup() == permissionGroup)
                     {
-                        permissionGroupMenuItem.DropDownItems.Add(new ToolStripMenuItem(permission.GetPermissionDescription()));
+                        permissionGroupMenuItem.DropDownItems.Add(
+                            new ToolStripMenuItem(permission.GetPermissionDescription())
+                        );
                     }
                 }
 
@@ -138,37 +148,48 @@ namespace POSForm
         private void ViewProductsMenuItem_Click(object? sender, EventArgs e)
         {
             // TODO: Implement logic to show a product management/view form/dialog
-            MessageBox.Show("Product View/Management clicked.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(
+                "Product View/Management clicked.",
+                "Information",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
         }
 
         private void ProductCategoriesMenuItem_Click(object? sender, EventArgs e)
         {
             // TODO: Implement logic to show a product category management form/dialog
-            MessageBox.Show("Product Categories clicked.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(
+                "Product Categories clicked.",
+                "Information",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
         }
 
         private void HelpMenuItem_Click(object? sender, EventArgs e)
         {
             // TODO: Implement logic to show help information
-            MessageBox.Show("Help clicked.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(
+                "Help clicked.",
+                "Information",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
         }
-
 
         private void UpdateDateLabel()
         {
             dateLabel.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         }
+
         private ProductControl CreateProductControl(Product product)
         {
             ProductControl productControl = new();
             productControl.InitializeProduct(product);
             productControl.ProductClicked += (sender, p) =>
             {
-                cart.AddItem(new ProductCartItem
-                {
-                    Product = product,
-                    Quantity = 1
-                });
+                cart.AddItem(new ProductCartItem { Product = product, Quantity = 1 });
             };
             return productControl;
         }
@@ -200,11 +221,7 @@ namespace POSForm
                 Product product = _productService.GetProductByBarcode(barcode);
                 if (product != null)
                 {
-                    cart.AddItem(new ProductCartItem
-                    {
-                        Product = product,
-                        Quantity = 1
-                    });
+                    cart.AddItem(new ProductCartItem { Product = product, Quantity = 1 });
                     textBoxBarcode.Clear();
                 }
                 else
@@ -235,9 +252,6 @@ namespace POSForm
             }
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-
-        }
+        private void MainForm_Load(object sender, EventArgs e) { }
     }
 }

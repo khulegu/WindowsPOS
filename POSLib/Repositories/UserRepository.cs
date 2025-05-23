@@ -12,11 +12,12 @@ namespace POSLib.Repositories
         /// </summary>
         /// <param name="role">The role of the user</param>
         /// <returns>The permissions for the user</returns>
-        private static List<Permission> GetPermissions(Role role)
+        internal static List<Permission> GetPermissions(Role role)
         {
-            if (role == Role.Manager)
+            return role switch
             {
-                return [
+                Role.Manager =>
+                [
                     Permission.ViewProducts,
                     Permission.AddProducts,
                     Permission.EditProducts,
@@ -26,19 +27,16 @@ namespace POSLib.Repositories
                     Permission.AddCategories,
                     Permission.DeleteCategories,
                     Permission.ViewHelp,
-                ];
-            }
-            else if (role == Role.Cashier)
-            {
-                return [
+                ],
+                Role.Cashier =>
+                [
                     Permission.ViewProducts,
                     Permission.ViewCategories,
                     Permission.ViewHelp,
-                ];
-            }
-            return [];
+                ],
+                _ => [],
+            };
         }
-
 
         /// <summary>
         /// Get a user by username and password
@@ -65,7 +63,8 @@ namespace POSLib.Repositories
 
             if (reader.Read())
             {
-                Role role = (Role)Enum.Parse(typeof(Role), reader.GetString(reader.GetOrdinal("role")));
+                Role role = (Role)
+                    Enum.Parse(typeof(Role), reader.GetString(reader.GetOrdinal("role")));
 
                 return new User
                 {

@@ -1,14 +1,14 @@
-﻿using System.Diagnostics;
+﻿using System.Data;
+using System.Diagnostics;
 using Microsoft.Data.Sqlite;
-using POSLib.Exceptions;
 using POSLib.Models;
 
 namespace POSLib.Repositories
 {
-
     public class ProductRepository : IProductRepository
     {
         private readonly string _connStr;
+
         public ProductRepository(string connStr) => _connStr = connStr;
 
         /// <summary>
@@ -18,7 +18,6 @@ namespace POSLib.Repositories
         /// <returns>The mapped Product object</returns>
         private Product MapProduct(SqliteDataReader reader)
         {
-            Debug.WriteLine(reader.IsDBNull(reader.GetOrdinal("imageUrl")) ? "NULL" : reader.GetString(reader.GetOrdinal("imageUrl")));
             return new Product
             {
                 Id = reader.GetInt32(reader.GetOrdinal("id")),
@@ -28,9 +27,11 @@ namespace POSLib.Repositories
                 Category = new ProductCategory
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("categoryId")),
-                    Name = reader.GetString(reader.GetOrdinal("categoryName"))
+                    Name = reader.GetString(reader.GetOrdinal("categoryName")),
                 },
-                ImageUrl = reader.IsDBNull(reader.GetOrdinal("imageUrl")) ? null : reader.GetString(reader.GetOrdinal("imageUrl"))
+                ImageUrl = reader.IsDBNull(reader.GetOrdinal("imageUrl"))
+                    ? null
+                    : reader.GetString(reader.GetOrdinal("imageUrl")),
             };
         }
 
@@ -45,7 +46,8 @@ namespace POSLib.Repositories
             connection.Open();
 
             using var command = connection.CreateCommand();
-            command.CommandText = @"
+            command.CommandText =
+                @"
                 SELECT p.id, p.name, p.price, p.barcode, c.id as categoryId, c.name as categoryName, p.imageUrl
                 FROM Products p
                 JOIN ProductCategories c ON p.categoryId = c.id
@@ -71,7 +73,8 @@ namespace POSLib.Repositories
             connection.Open();
 
             using var command = connection.CreateCommand();
-            command.CommandText = @"
+            command.CommandText =
+                @"
                 SELECT p.id, p.name, p.price, p.barcode, c.id as categoryId, c.name as categoryName, p.imageUrl
                 FROM Products p
                 JOIN ProductCategories c ON p.categoryId = c.id
@@ -98,7 +101,8 @@ namespace POSLib.Repositories
             connection.Open();
 
             using var command = connection.CreateCommand();
-            command.CommandText = @"
+            command.CommandText =
+                @"
                 SELECT p.id, p.name, p.price, p.barcode, c.id as categoryId, c.name as categoryName, p.imageUrl
                 FROM Products p
                 JOIN ProductCategories c ON p.categoryId = c.id
@@ -125,7 +129,8 @@ namespace POSLib.Repositories
 
             using var command = connection.CreateCommand();
 
-            command.CommandText = "INSERT INTO Products (name, price, barcode, categoryId, imageUrl) VALUES ($name, $price, $barcode, $categoryId, $imageUrl)";
+            command.CommandText =
+                "INSERT INTO Products (name, price, barcode, categoryId, imageUrl) VALUES ($name, $price, $barcode, $categoryId, $imageUrl)";
             command.Parameters.AddWithValue("$name", product.Name);
             command.Parameters.AddWithValue("$price", product.Price);
             command.Parameters.AddWithValue("$barcode", product.Barcode);
@@ -137,51 +142,11 @@ namespace POSLib.Repositories
             }
             catch (SqliteException ex) when (ex.SqliteErrorCode == 19) // SQLITE_CONSTRAINT
             {
-                if (ex.Message.Contains("UNIQUE constraint failed: Products.barcode"))
-                {
-                    throw new BarcodeAlreadyExistsException($"A product with the barcode '{product.Barcode}' already exists.", ex);
-                }
-                throw;
+                throw new DuplicateNameException(
+                    $"A product with the barcode '{product.Barcode}' already exists.",
+                    ex
+                );
             }
-        }
-
-        /// <summary>
-        /// Update a product
-        /// </summary>
-        /// <param name="product">The product to update</param>
-        public void Update(Product product)
-        {
-            using var connection = new SqliteConnection(_connStr);
-            connection.Open();
-
-            using var command = connection.CreateCommand();
-
-            command.CommandText = "UPDATE Products SET name = $name, price = $price, barcode = $barcode WHERE id = $id, categoryId = $categoryId, imageUrl = $imageUrl";
-            command.Parameters.AddWithValue("$name", product.Name);
-            command.Parameters.AddWithValue("$price", product.Price);
-            command.Parameters.AddWithValue("$barcode", product.Barcode);
-            command.Parameters.AddWithValue("$id", product.Id);
-            command.Parameters.AddWithValue("$categoryId", product.Category.Id);
-            command.Parameters.AddWithValue("$imageUrl", product.ImageUrl ?? (object)DBNull.Value);
-
-            command.ExecuteNonQuery();
-        }
-
-        /// <summary>
-        /// Delete a product
-        /// </summary>
-        /// <param name="id">The id of the product to delete</param>
-        public void Delete(int id)
-        {
-            using var connection = new SqliteConnection(_connStr);
-            connection.Open();
-
-            using var command = connection.CreateCommand();
-
-            command.CommandText = "DELETE FROM Products WHERE id = $id";
-            command.Parameters.AddWithValue("$id", id);
-
-            command.ExecuteNonQuery();
         }
 
         /// <summary>
@@ -202,41 +167,6 @@ namespace POSLib.Repositories
         }
 
         /// <summary>
-        /// Update a category
-        /// </summary>
-        /// <param name="category">The category to update</param>
-        public void UpdateCategory(ProductCategory category)
-        {
-            using var connection = new SqliteConnection(_connStr);
-            connection.Open();
-
-            using var command = connection.CreateCommand();
-
-            command.CommandText = "UPDATE ProductCategories SET name = $name WHERE id = $id";
-            command.Parameters.AddWithValue("$name", category.Name);
-            command.Parameters.AddWithValue("$id", category.Id);
-
-            command.ExecuteNonQuery();
-        }
-
-        /// <summary>
-        /// Delete a category
-        /// </summary>
-        /// <param name="id">The id of the category to delete</param>
-        public void DeleteCategory(int id)
-        {
-            using var connection = new SqliteConnection(_connStr);
-            connection.Open();
-
-            using var command = connection.CreateCommand();
-
-            command.CommandText = "DELETE FROM ProductCategories WHERE id = $id";
-            command.Parameters.AddWithValue("$id", id);
-
-            command.ExecuteNonQuery();
-        }
-
-        /// <summary>
         /// Get all categories
         /// </summary>
         /// <returns>A list of all categories</returns>
@@ -252,11 +182,13 @@ namespace POSLib.Repositories
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                categories.Add(new ProductCategory
-                {
-                    Id = reader.GetInt32(reader.GetOrdinal("id")),
-                    Name = reader.GetString(reader.GetOrdinal("name"))
-                });
+                categories.Add(
+                    new ProductCategory
+                    {
+                        Id = reader.GetInt32(reader.GetOrdinal("id")),
+                        Name = reader.GetString(reader.GetOrdinal("name")),
+                    }
+                );
             }
             return categories;
         }
