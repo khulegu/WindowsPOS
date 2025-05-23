@@ -17,7 +17,6 @@ namespace POSLibTest
         public void Setup()
         {
             _repository = new UserRepository(_testConnectionString);
-
             var connection = new SqliteConnection(_testConnectionString);
             connection.Open();
 
