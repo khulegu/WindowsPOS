@@ -59,7 +59,7 @@ namespace POSLib.Models
             return permission switch
             {
                 Permission.ViewProducts => "_Бараа харах",
-                Permission.AddProducts => "_Бараа нэмэх",
+                Permission.AddProducts => "Бараа нэмэх",
                 Permission.EditProducts => "Бараа засах",
                 Permission.DeleteProducts => "Бараа устгах",
                 Permission.EditCategories => "_Ангилал засах",

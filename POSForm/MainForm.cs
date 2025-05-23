@@ -159,11 +159,36 @@ namespace POSForm
         {
             if (permission == Permission.ViewProducts)
             {
-                MessageBox.Show("View Products clicked.");
+                return;
             }
             else if (permission == Permission.AddProducts)
             {
-                MessageBox.Show("Add Products clicked.");
+                try
+                {
+                    using var addForm = new AddProductForm(_productService.Categories.ToList());
+                    if (addForm.ShowDialog() == DialogResult.OK && addForm.NewProduct != null)
+                    {
+                        _productService.AddProduct(addForm.NewProduct);
+                    }
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
+                catch (DuplicateNameException ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
             }
             else if (permission == Permission.EditProducts)
             {
@@ -275,6 +300,7 @@ namespace POSForm
                 }
                 _selectedProductControl = productControl;
                 _selectedProductControl.IsSelected = true;
+                cart.AddItem(new ProductCartItem { Product = product, Quantity = 1 });
             };
             return productControl;
         }

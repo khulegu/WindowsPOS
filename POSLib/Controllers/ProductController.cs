@@ -68,12 +68,13 @@ namespace POSLib.Controllers
             if (_user.Permissions.Contains(Permission.AddProducts) == false)
                 throw new UnauthorizedAccessException("Танд бараа нэмэх эрх байхгүй.");
             _productRepo.Add(product);
+            FillProductsByCategory(_selectedCategory);
         }
 
         /// <summary>
-        /// Delete a product
+        /// Бараа устгах.
         /// </summary>
-        /// <param name="productId">The id of the product to delete</param>
+        /// <param name="productId">Устгах барааны id.</param>
         public void DeleteProduct(int productId)
         {
             if (_user.Permissions.Contains(Permission.DeleteProducts) == false)
@@ -83,9 +84,9 @@ namespace POSLib.Controllers
         }
 
         /// <summary>
-        /// Edit a product
+        /// Бараа засах.
         /// </summary>
-        /// <param name="product">The product to edit</param>
+        /// <param name="product">Засах бараа.</param>
         public void EditProduct(Product product)
         {
             if (_user.Permissions.Contains(Permission.EditProducts) == false)

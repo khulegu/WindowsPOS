@@ -13,6 +13,7 @@
     "**/.vs": true,
     "**/TestResults": true,
     "**/*.resx": true,
-    "**/*.user": true
+    "**/*.user": true,
+    "**/Properties": true
   },
 }
